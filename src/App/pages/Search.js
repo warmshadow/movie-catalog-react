@@ -1,33 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import tmdb from '../api/tmdb';
+import { connect } from 'react-redux';
+import Spinner from 'react-bootstrap/Spinner';
+import { setMovieListSearch } from '../actions';
 import MovieList from '../components/MovieList';
 
-function Search() {
+function Search({ movieList, setMovieList }) {
   const { title } = useParams();
-  const [results, setResults] = useState(null);
 
   useEffect(() => {
-    async function fetchMovies() {
-      const res = await tmdb.get('/search/movie', {
-        params: {
-          query: title,
-        },
-      });
-      setResults(res.data);
-    }
-    fetchMovies();
-  }, [title]);
+    setMovieList(title);
+  }, [setMovieList, title]);
 
-  if (!results) return <div>Loading</div>;
+  if (movieList.isPending) return <Spinner animation="border" />;
 
   return (
     <>
       <h2>Search results for:</h2>
       <h3>{title}</h3>
-      <MovieList movies={results.results} />
+      <MovieList movies={movieList.results} />
     </>
   );
 }
 
-export default Search;
+const mapStateToProps = (state) => {
+  return {
+    movieList: state.movieList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setMovieList: (title) => dispatch(setMovieListSearch(title)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

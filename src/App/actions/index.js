@@ -8,7 +8,7 @@ const setConfig = () => async (dispatch) => {
 const setMovieListSearch = (title) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIE_LIST_PENDING' });
 
-  const res = tmdb.get('/search/movie', {
+  const res = await tmdb.get('/search/movie', {
     params: {
       query: title,
     },
