@@ -16,4 +16,15 @@ const setMovieListSearch = (title) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIE_LIST', payload: res.data });
 };
 
-export { setConfig, setMovieListSearch };
+const setMovie = (id) => async (dispatch) => {
+  dispatch({ type: 'SET_MOVIE_PENDING' });
+
+  const res = await tmdb.get(`/movie/${id}`, {
+    params: {
+      append_to_response: 'credits,similar',
+    },
+  });
+  dispatch({ type: 'SET_MOVIE', payload: res.data });
+};
+
+export { setConfig, setMovieListSearch, setMovie };
