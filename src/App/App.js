@@ -7,6 +7,7 @@ import { setConfig as setConfigAction } from './actions';
 import NavigationBar from './nav/NavigationBar';
 import Home from './pages/Home';
 import Search from './pages/Search';
+import Movie from './pages/Movie';
 import './App.css';
 
 function App({ config, setConfig }) {
@@ -35,6 +36,7 @@ function App({ config, setConfig }) {
           <Route exact path="/" render={() => <Redirect to="home" />} />
           <Route exact path="/home" component={Home} />
           <Route exact path="/search/:title" component={Search} />
+          <Route exact path="/movie/:id" component={Movie} />
           <Route render={() => <div>PAGE NOT FOUND</div>} />
         </Switch>
       </BrowserRouter>
