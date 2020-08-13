@@ -13,7 +13,7 @@ function SearchBar() {
 
   function handleSearch(e) {
     e.preventDefault();
-    history.push(`/search/${value}`);
+    if (value) history.push(`/search/${value}`);
   }
 
   return (
