@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 function SearchBar() {
   const [value, setValue] = useState('');
+  const history = useHistory();
 
   function handleChange(e) {
     setValue(e.target.value);
@@ -11,7 +13,7 @@ function SearchBar() {
 
   function handleSearch(e) {
     e.preventDefault();
-    console.log(value);
+    history.push(`/search/${value}`);
   }
 
   return (
