@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import tmdb from '../api/tmdb';
 import MovieList from '../components/MovieList';
-
-const BASE_URL = 'https://api.themoviedb.org/3/search/movie?query=';
-const TOKEN = process.env.REACT_APP_BEARER_TOKEN;
-const AUTH = `Bearer ${TOKEN}`;
-
-const HEADERS = {
-  Authorization: AUTH,
-};
 
 function Search() {
   const { title } = useParams();
@@ -17,8 +9,10 @@ function Search() {
 
   useEffect(() => {
     async function fetchMovies() {
-      const res = await axios.get(`${BASE_URL}${title}`, {
-        headers: HEADERS,
+      const res = await tmdb.get('/search/movie', {
+        params: {
+          query: title,
+        },
       });
       setResults(res.data);
     }
