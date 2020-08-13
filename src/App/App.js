@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Container from 'react-bootstrap/Container';
+import Spinner from 'react-bootstrap/Spinner';
 import { setConfig as setConfigAction } from './actions';
 import NavigationBar from './nav/NavigationBar';
 import Home from './pages/Home';
@@ -13,9 +14,21 @@ function App({ config, setConfig }) {
     setConfig();
   }, [setConfig]);
 
-  console.log(config);
+  if (config.isPending)
+    return (
+      <Container
+        align="center"
+        style={{
+          height: 'calc(100vh - 70px)',
+        }}
+        className="d-flex align-items-center justify-content-center"
+      >
+        <Spinner animation="border" />
+      </Container>
+    );
+
   return (
-    <Container className="App">
+    <Container align="center">
       <BrowserRouter>
         <NavigationBar />
         <Switch>
