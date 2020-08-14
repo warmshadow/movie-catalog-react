@@ -5,9 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
-const IMDB_URL = 'https://www.imdb.com/title/';
-
-function MovieDetails({ movie, directors, baseUrl }) {
+function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl }) {
   return (
     <Jumbotron className="bg-white">
       <Row noGutters style={{ width: '100%' }}>
@@ -34,7 +32,7 @@ function MovieDetails({ movie, directors, baseUrl }) {
               ))}
               <Card.Text>{movie.overview}</Card.Text>
               {movie.imdb_id && (
-                <Button variant="warning" href={`${IMDB_URL}${movie.imdb_id}`} target="_blank">
+                <Button variant="warning" href={`${imdbBaseUrl}${movie.imdb_id}`} target="_blank">
                   IMDB
                 </Button>
               )}
