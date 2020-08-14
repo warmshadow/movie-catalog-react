@@ -30,10 +30,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setMovieList: (title) => dispatch(setMovieListSearch(title)),
-  };
+const mapDispatchToProps = {
+  setMovieList: setMovieListSearch,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);
