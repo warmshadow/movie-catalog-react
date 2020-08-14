@@ -6,7 +6,7 @@ import { setMovie as setMovieAction } from '../actions';
 import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
 
-function Movie({ movie, setMovie, baseUrl }) {
+function Movie({ movie, setMovie, baseUrl, imdbBaseUrl }) {
   const { id } = useParams();
 
   useEffect(() => {
@@ -22,7 +22,12 @@ function Movie({ movie, setMovie, baseUrl }) {
 
   return (
     <>
-      <MovieDetails movie={movie} directors={directors} baseUrl={baseUrl} />
+      <MovieDetails
+        movie={movie}
+        directors={directors}
+        baseUrl={baseUrl}
+        imdbBaseUrl={imdbBaseUrl}
+      />
       <h3>Similar movies:</h3>
       <MovieList movies={similarMovies} baseUrl={baseUrl} />
     </>
@@ -33,6 +38,7 @@ const mapStateToProps = (state) => {
   return {
     movie: state.movie,
     baseUrl: state.config.images.secure_base_url,
+    imdbBaseUrl: state.config.imdbBaseUrl,
   };
 };
 
