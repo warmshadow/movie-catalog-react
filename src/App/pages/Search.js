@@ -5,7 +5,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { setMovieListSearch } from '../actions';
 import MovieList from '../components/MovieList';
 
-function Search({ movieList, setMovieList }) {
+function Search({ movieList, setMovieList, baseUrl }) {
   const { title } = useParams();
 
   useEffect(() => {
@@ -18,7 +18,7 @@ function Search({ movieList, setMovieList }) {
     <>
       <h2>Search results for:</h2>
       <h3>{title}</h3>
-      <MovieList movies={movieList.results} />
+      <MovieList movies={movieList.results} baseUrl={baseUrl} />
     </>
   );
 }
@@ -26,6 +26,7 @@ function Search({ movieList, setMovieList }) {
 const mapStateToProps = (state) => {
   return {
     movieList: state.movieList,
+    baseUrl: state.config.images.secure_base_url,
   };
 };
 

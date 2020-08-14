@@ -7,13 +7,13 @@ import Button from 'react-bootstrap/Button';
 
 const IMDB_URL = 'https://www.imdb.com/title/';
 
-function MovieDetails({ movie, directors }) {
+function MovieDetails({ movie, directors, baseUrl }) {
   return (
     <Jumbotron className="bg-white">
       <Row noGutters style={{ width: '100%' }}>
         <Col md={4}>
           <Card.Img
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            src={`${baseUrl}w780${movie.poster_path}`}
             alt="poster"
             style={{ maxHeight: '100%' }}
           />

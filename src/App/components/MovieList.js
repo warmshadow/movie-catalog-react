@@ -1,9 +1,7 @@
 import React from 'react';
 import MovieCard from './MovieCard';
 
-function MovieList({ movies }) {
-  const baseUrl = 'https://image.tmdb.org/t/p/';
-
+function MovieList({ movies, baseUrl }) {
   return (
     <>
       {movies.map((movie) => (

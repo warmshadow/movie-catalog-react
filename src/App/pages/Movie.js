@@ -6,7 +6,7 @@ import { setMovie as setMovieAction } from '../actions';
 import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
 
-function Movie({ movie, setMovie }) {
+function Movie({ movie, setMovie, baseUrl }) {
   const { id } = useParams();
 
   useEffect(() => {
@@ -22,9 +22,9 @@ function Movie({ movie, setMovie }) {
 
   return (
     <>
-      <MovieDetails movie={movie} directors={directors} />
+      <MovieDetails movie={movie} directors={directors} baseUrl={baseUrl} />
       <h3>Similar movies:</h3>
-      <MovieList movies={similarMovies} />
+      <MovieList movies={similarMovies} baseUrl={baseUrl} />
     </>
   );
 }
@@ -32,6 +32,7 @@ function Movie({ movie, setMovie }) {
 const mapStateToProps = (state) => {
   return {
     movie: state.movie,
+    baseUrl: state.config.images.secure_base_url,
   };
 };
 
