@@ -33,11 +33,21 @@ function App({ config, setConfig }) {
       <BrowserRouter>
         <NavigationBar />
         <Switch>
-          <Route exact path="/" render={() => <Redirect to="home" />} />
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/search/:title" component={Search} />
-          <Route exact path="/movie/:id" component={Movie} />
-          <Route render={() => <div>PAGE NOT FOUND</div>} />
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+          <Route exact path="/home">
+            <Home />
+          </Route>
+          <Route exact path={['/search/:title', '/search/:title/:pageNum']}>
+            <Search />
+          </Route>
+          <Route exact path={['/movie/:id', '/movie/:id/:pageNum']}>
+            <Movie />
+          </Route>
+          <Route>
+            <div>PAGE NOT FOUND</div>
+          </Route>
         </Switch>
       </BrowserRouter>
     </Container>
