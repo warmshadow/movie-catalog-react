@@ -8,9 +8,19 @@ function MovieList({ movies, baseUrl, basePath }) {
 
   return movies.results.length ? (
     <>
-      {movies.results.map((movie) => (
-        <MovieCard movie={movie} baseUrl={baseUrl} key={movie.id} />
-      ))}
+      {movies.results.map((movie) => {
+        const { id, poster_path: posterPath, title, release_date: releaseDate } = movie;
+        return (
+          <MovieCard
+            id={id}
+            posterPath={posterPath}
+            title={title}
+            releaseDate={releaseDate}
+            baseUrl={baseUrl}
+            key={id}
+          />
+        );
+      })}
       <PageLinks page={movies.page} totalPages={movies.total_pages} basePath={basePath} />
     </>
   ) : (
