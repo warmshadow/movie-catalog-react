@@ -9,7 +9,18 @@ import { compose } from 'redux';
 import moment from 'moment';
 import { createUserMovieList } from '../actions';
 
-const newList = { name: 'as piktas as liudnas', userName: 'lowkey', movies: [123, 456] };
+const newList = {
+  name: 'as piktas as liudnas',
+  userName: 'lowkey',
+  movies: [
+    {
+      id: 475557,
+      posterPath: '/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg',
+      title: 'Joker',
+      releaseDate: 2019,
+    },
+  ],
+};
 
 function Lists({ userMovieLists, dispatch }) {
   if (userMovieLists) {
