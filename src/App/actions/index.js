@@ -48,4 +48,26 @@ const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIES', payload: res.data });
 };
 
-export { setConfig, setMoviesCategory, setMoviesSearch, setMovie, setMoviesSimilar };
+const createUserMovieList = (list) => async (dispatch, getState, { getFirestore }) => {
+  // make async call to db
+  try {
+    const firestore = getFirestore();
+    await firestore.collection('lists').add({
+      ...list,
+      userId: 101,
+      createdAt: new Date(),
+    });
+    dispatch({ type: 'CREATE_MOVIE_LIST_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'CREATE_MOVIE_LIST_ERROR' });
+  }
+};
+
+export {
+  setConfig,
+  setMoviesCategory,
+  setMoviesSearch,
+  setMovie,
+  setMoviesSimilar,
+  createUserMovieList,
+};
