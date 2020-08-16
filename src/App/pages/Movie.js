@@ -8,6 +8,7 @@ import MovieList from '../components/MovieList';
 
 function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar }) {
   const { id, pageNum } = useParams();
+  const basePath = `/movie/${id}`;
 
   useEffect(() => {
     setMovie(id);
@@ -31,7 +32,7 @@ function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar
         imdbBaseUrl={imdbBaseUrl}
       />
       <h3>Similar movies:</h3>
-      <MovieList movies={movies} baseUrl={baseUrl} />
+      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
 }

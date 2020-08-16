@@ -7,6 +7,7 @@ import MovieList from '../components/MovieList';
 
 function Search({ movies, setMoviesSearch, baseUrl }) {
   const { title, pageNum } = useParams();
+  const basePath = `/search/${title}`;
 
   useEffect(() => {
     setMoviesSearch(title, pageNum);
@@ -18,7 +19,7 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
     <>
       <h2>Search results for:</h2>
       <h3>{title}</h3>
-      <MovieList movies={movies} baseUrl={baseUrl} />
+      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
 }
