@@ -1,8 +1,11 @@
 import React from 'react';
+import Spinner from 'react-bootstrap/Spinner';
 import MovieCard from './MovieCard';
 import PageLinks from './PageLinks';
 
 function MovieList({ movies, baseUrl, basePath }) {
+  if (movies.isPending) return <Spinner animation="border" />;
+
   return movies.results.length ? (
     <>
       {movies.results.map((movie) => (

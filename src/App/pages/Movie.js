@@ -18,7 +18,7 @@ function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar
     setMoviesSimilar(id, pageNum);
   }, [id, pageNum, setMoviesSimilar]);
 
-  if (movies.isPending || movie.isPending) return <Spinner animation="border" />;
+  if (movie.isPending) return <Spinner animation="border" />;
 
   const { crew } = movie.credits;
   const directors = crew.filter((member) => member.job === 'Director');
