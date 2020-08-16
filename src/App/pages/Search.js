@@ -18,7 +18,7 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
     <>
       <h2>Search results for:</h2>
       <h3>{title}</h3>
-      <MovieList movies={movies.results} baseUrl={baseUrl} />
+      <MovieList movies={movies} baseUrl={baseUrl} />
     </>
   );
 }
