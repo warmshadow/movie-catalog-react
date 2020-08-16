@@ -3,6 +3,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
+import Spinner from 'react-bootstrap/Spinner';
 import MovieCard from '../components/MovieCard';
 
 function List(props) {
@@ -32,7 +33,7 @@ function List(props) {
     return <Redirect to="/notfound" />;
   }
 
-  return <div>Loading...</div>;
+  return <Spinner animation="border" />;
 }
 
 const mapStateToProps = (state, ownProps) => {
