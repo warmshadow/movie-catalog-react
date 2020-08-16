@@ -6,11 +6,11 @@ import { setMoviesSearch as setMoviesSearchAction } from '../actions';
 import MovieList from '../components/MovieList';
 
 function Search({ movies, setMoviesSearch, baseUrl }) {
-  const { title } = useParams();
+  const { title, pageNum } = useParams();
 
   useEffect(() => {
-    setMoviesSearch(title);
-  }, [setMoviesSearch, title]);
+    setMoviesSearch(title, pageNum);
+  }, [title, pageNum, setMoviesSearch]);
 
   if (movies.isPending) return <Spinner animation="border" />;
 

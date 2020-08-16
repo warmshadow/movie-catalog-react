@@ -5,12 +5,13 @@ const setConfig = () => async (dispatch) => {
   dispatch({ type: 'SET_CONFIG', payload: res.data });
 };
 
-const setMoviesSearch = (title) => async (dispatch) => {
+const setMoviesSearch = (title, pageNum) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIES_PENDING' });
 
   const res = await tmdb.get('/search/movie', {
     params: {
       query: title,
+      page: pageNum,
     },
   });
   dispatch({ type: 'SET_MOVIES', payload: res.data });
@@ -27,10 +28,14 @@ const setMovie = (id) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIE', payload: res.data });
 };
 
-const setMoviesSimilar = (id) => async (dispatch) => {
+const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIES_PENDING' });
 
-  const res = await tmdb.get(`/movie/${id}/similar`);
+  const res = await tmdb.get(`/movie/${id}/similar`, {
+    params: {
+      page: pageNum,
+    },
+  });
   dispatch({ type: 'SET_MOVIES', payload: res.data });
 };
 

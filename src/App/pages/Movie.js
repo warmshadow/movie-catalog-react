@@ -7,15 +7,15 @@ import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
 
 function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar }) {
-  const { id } = useParams();
+  const { id, pageNum } = useParams();
 
   useEffect(() => {
     setMovie(id);
   }, [id, setMovie]);
 
   useEffect(() => {
-    setMoviesSimilar(id);
-  }, [id, setMoviesSimilar]);
+    setMoviesSimilar(id, pageNum);
+  }, [id, pageNum, setMoviesSimilar]);
 
   if (movies.isPending || movie.isPending) return <Spinner animation="border" />;
 
