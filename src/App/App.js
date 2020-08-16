@@ -9,6 +9,8 @@ import Home from './pages/Home';
 import Category from './pages/Category';
 import Search from './pages/Search';
 import Movie from './pages/Movie';
+import Lists from './pages/Lists';
+import List from './pages/List';
 import './App.css';
 
 function App({ config, setConfig }) {
@@ -48,6 +50,12 @@ function App({ config, setConfig }) {
           </Route>
           <Route exact path={['/movie/:id', '/movie/:id/:pageNum']}>
             <Movie />
+          </Route>
+          <Route exact path="/lists">
+            <Lists />
+          </Route>
+          <Route exact path="/lists/:id">
+            <List />
           </Route>
           <Route>
             <div>PAGE NOT FOUND</div>
