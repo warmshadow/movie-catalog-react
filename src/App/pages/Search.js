@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
 import { setMoviesSearch as setMoviesSearchAction } from '../actions';
 import MovieList from '../components/MovieList';
+import pageIsInt from '../helpers';
 
 function Search({ movies, setMoviesSearch, baseUrl }) {
   const { title, pageNum } = useParams();
@@ -12,6 +13,8 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
   useEffect(() => {
     setMoviesSearch(title, pageNum);
   }, [title, pageNum, setMoviesSearch]);
+
+  if (!pageIsInt(pageNum)) return <Redirect to="/notfound" />;
 
   if (movies.isPending) return <Spinner animation="border" />;
 

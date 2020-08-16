@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
 import { setMovie as setMovieAction, setMoviesSimilar as setMoviesSimilarAction } from '../actions';
 import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
+import pageIsInt from '../helpers';
 
 function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar }) {
   const { id, pageNum } = useParams();
@@ -17,6 +18,8 @@ function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar
   useEffect(() => {
     setMoviesSimilar(id, pageNum);
   }, [id, pageNum, setMoviesSimilar]);
+
+  if (!pageIsInt(pageNum)) return <Redirect to="/notfound" />;
 
   if (movie.isPending) return <Spinner animation="border" />;
 
