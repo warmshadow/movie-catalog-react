@@ -6,6 +6,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { setConfig as setConfigAction } from './actions';
 import NavigationBar from './nav/NavigationBar';
 import Home from './pages/Home';
+import Category from './pages/Category';
 import Search from './pages/Search';
 import Movie from './pages/Movie';
 import './App.css';
@@ -38,6 +39,9 @@ function App({ config, setConfig }) {
           </Route>
           <Route exact path="/home">
             <Home />
+          </Route>
+          <Route exact path={['/category/:title', '/category/:title/:pageNum']}>
+            <Category />
           </Route>
           <Route exact path={['/search/:title', '/search/:title/:pageNum']}>
             <Search />
