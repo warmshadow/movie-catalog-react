@@ -1,16 +1,30 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 import { Provider } from 'react-redux';
-import App from './App/App';
-import * as serviceWorker from './serviceWorker';
+import { createFirestoreInstance } from 'redux-firestore';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import firebase from 'firebase/app';
 import store from './App/store';
+import firebaseConfig from './App/config/firebaseConfig';
+import * as serviceWorker from './serviceWorker';
+import App from './App/App';
+
+const rrfProps = {
+  firebase,
+  config: firebaseConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance,
+};
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <App />
+      </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
