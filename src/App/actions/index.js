@@ -52,9 +52,10 @@ const createUserMovieList = (list) => async (dispatch, getState, { getFirestore 
   // make async call to db
   try {
     const firestore = getFirestore();
+    const userId = getState().firebase.auth.uid;
     await firestore.collection('userMovieLists').add({
       ...list,
-      userId: 101,
+      userId,
       createdAt: new Date(),
     });
     dispatch({ type: 'CREATE_MOVIE_LIST_SUCCESS' });
