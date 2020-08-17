@@ -6,8 +6,8 @@ import Col from 'react-bootstrap/Col';
 
 function MovieCard({ id, posterPath, title, releaseDate, baseUrl }) {
   return (
-    <Link to={`/movie/${id}`}>
-      <Card>
+    <Link to={`/movie/${id}`} className="text-decoration-none">
+      <Card bg="secondary" className="text-dark mb-4 moviecard">
         <Row noGutters style={{ width: '100%' }}>
           <Col md={2}>
             <Card.Img src={`${baseUrl}w342${posterPath}`} />

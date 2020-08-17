@@ -1,3 +1,12 @@
 .App {
   text-align: center;
 }
+
+.moviecard {
+  opacity: 0.8;
+}
+
+.moviecard:hover {
+  opacity: 1;
+  transition: 0.3s;
+}
