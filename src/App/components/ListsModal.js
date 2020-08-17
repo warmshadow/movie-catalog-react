@@ -28,6 +28,7 @@ function ListsModal({ show, handleClose, userMovieLists, auth, movie, addMovieTo
                     addMovieToList(list, movie);
                     handleClose();
                   }}
+                  key={list.id}
                 >
                   {list.name}
                 </ListGroup.Item>
