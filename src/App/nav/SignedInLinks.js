@@ -9,7 +9,7 @@ function SignedInLinks({ profile, signOut }) {
   const { firstName, lastName } = profile;
   return (
     <Nav className="ml-auto">
-      <NavLink to="/">
+      <NavLink to="/lists">
         <Button variant="link">My Lists</Button>
       </NavLink>
       <Button variant="link" onClick={signOut}>

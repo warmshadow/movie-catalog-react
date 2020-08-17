@@ -6,27 +6,34 @@ import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieCard from '../components/MovieCard';
 
-function List(props) {
-  const { userMovieList, requesting, baseUrl } = props;
+function List({ auth, userMovieList, requesting, baseUrl }) {
+  if (!auth.uid) return <Redirect to="/signin" />;
 
   if (requesting === false) {
     if (userMovieList) {
+      // redirect if list doesn't belong to current user
+      if (userMovieList.userId !== auth.uid) return <Redirect to="/notfound" />;
+
       return (
         <div>
           <h2>{userMovieList.name}</h2>
-          {userMovieList.movies.map((movie) => {
-            const { id, posterPath, title, releaseDate } = movie;
-            return (
-              <MovieCard
-                id={id}
-                posterPath={posterPath}
-                title={title}
-                releaseDate={releaseDate}
-                baseUrl={baseUrl}
-                key={id}
-              />
-            );
-          })}
+          {userMovieList.movies ? (
+            userMovieList.movies.map((movie) => {
+              const { id, posterPath, title, releaseDate } = movie;
+              return (
+                <MovieCard
+                  id={id}
+                  posterPath={posterPath}
+                  title={title}
+                  releaseDate={releaseDate}
+                  baseUrl={baseUrl}
+                  key={id}
+                />
+              );
+            })
+          ) : (
+            <h5>No movies in the list</h5>
+          )}
         </div>
       );
     }
@@ -44,6 +51,7 @@ const mapStateToProps = (state, ownProps) => {
   const requesting = firestore.status.requesting.userMovieLists;
 
   return {
+    auth: state.firebase.auth,
     userMovieList,
     requesting,
     baseUrl: state.config.images.secure_base_url,

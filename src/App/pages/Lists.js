@@ -1,36 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import moment from 'moment';
-import { createUserMovieList } from '../actions';
+import { createUserMovieList as createUserMovieListAction } from '../actions';
+import CreateList from '../components/CreateList';
 
-const newList = {
-  name: 'as piktas as liudnas',
-  userName: 'lowkey',
-  movies: [
-    {
-      id: 475557,
-      posterPath: '/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg',
-      title: 'Joker',
-      releaseDate: 2019,
-    },
-  ],
-};
+function Lists({ auth, userMovieLists, createUserMovieList }) {
+  if (!auth.uid) return <Redirect to="/signin" />;
 
-function Lists({ userMovieLists, dispatch }) {
   if (userMovieLists) {
-    if (userMovieLists.length === 0) return <h3>No lists found</h3>;
+    const currUserMovieLists = userMovieLists.filter((list) => list.userId === auth.uid);
+    if (currUserMovieLists.length === 0) return <h3>No lists found</h3>;
 
     return (
       <div>
         <h2>My lists:</h2>
-        <ListGroup>
-          {userMovieLists.map((list) => {
+        <ListGroup className="mb-5">
+          {currUserMovieLists.map((list) => {
             const { id, name, createdAt } = list;
             const date = moment(createdAt.toDate()).format('MMM D, YYYY');
             return (
@@ -43,7 +33,7 @@ function Lists({ userMovieLists, dispatch }) {
             );
           })}
         </ListGroup>
-        <Button onClick={() => dispatch(createUserMovieList(newList))}>Add List</Button>
+        <CreateList createList={createUserMovieList} />
       </div>
     );
   }
@@ -51,12 +41,18 @@ function Lists({ userMovieLists, dispatch }) {
 }
 
 const mapStateToProps = (state) => {
+  const { userMovieLists } = state.firestore.ordered;
   return {
-    userMovieLists: state.firestore.ordered.userMovieLists,
+    userMovieLists,
+    auth: state.firebase.auth,
   };
 };
 
+const mapDispatchToProps = {
+  createUserMovieList: createUserMovieListAction,
+};
+
 export default compose(
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([{ collection: 'userMovieLists' }])
 )(Lists);
