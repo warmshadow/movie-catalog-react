@@ -11,6 +11,8 @@ import Search from './pages/Search';
 import Movie from './pages/Movie';
 import Lists from './pages/Lists';
 import List from './pages/List';
+import SignIn from './auth/SignIn';
+import SignUp from './auth/SignUp';
 import './App.css';
 
 function App({ config, setConfig }) {
@@ -56,6 +58,12 @@ function App({ config, setConfig }) {
           </Route>
           <Route exact path="/lists/:id">
             <List />
+          </Route>
+          <Route exact path="/signin">
+            <SignIn />
+          </Route>
+          <Route exact path="/signup">
+            <SignUp />
           </Route>
           <Route>
             <div>PAGE NOT FOUND</div>
