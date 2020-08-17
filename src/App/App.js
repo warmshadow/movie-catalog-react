@@ -13,6 +13,7 @@ import Lists from './pages/Lists';
 import List from './pages/List';
 import SignIn from './auth/SignIn';
 import SignUp from './auth/SignUp';
+import NotFound from './pages/NotFound';
 import './App.css';
 
 function App({ config, setConfig }) {
@@ -66,7 +67,7 @@ function App({ config, setConfig }) {
             <SignUp />
           </Route>
           <Route>
-            <div>PAGE NOT FOUND</div>
+            <NotFound />
           </Route>
         </Switch>
       </BrowserRouter>
