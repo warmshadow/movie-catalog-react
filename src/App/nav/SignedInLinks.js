@@ -5,19 +5,21 @@ import { NavLink } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { signOut as signOutAction } from '../actions/authActions';
 
-function SignedInLinks({ profile, signOut }) {
-  const { firstName, lastName } = profile;
+function SignedInLinks({ handleCollapse, signOut }) {
   return (
-    <Nav className="ml-auto">
-      <NavLink to="/lists">
-        <Button variant="link">My Lists</Button>
+    <Nav className="mr-auto">
+      <NavLink to="/lists" onClick={handleCollapse}>
+        <Button className="nav-link">My Lists</Button>
       </NavLink>
-      <Button variant="link" onClick={signOut}>
+      <Button
+        className="nav-link"
+        onClick={() => {
+          signOut();
+          handleCollapse();
+        }}
+      >
         Log Out
       </Button>
-      <NavLink to="/">
-        <Button variant="link">{`${firstName} ${lastName}`}</Button>
-      </NavLink>
     </Nav>
   );
 }

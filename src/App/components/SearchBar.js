@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-function SearchBar() {
+function SearchBar({ handleCollapse }) {
   const [value, setValue] = useState('');
   const history = useHistory();
 
@@ -17,7 +17,7 @@ function SearchBar() {
   }
 
   return (
-    <Form inline onSubmit={handleSearch} className="ml-auto">
+    <Form inline onSubmit={handleSearch} className="d-flex justify-content-center my-2 my-lg-0">
       <Form.Control
         type="text"
         value={value}
@@ -25,7 +25,7 @@ function SearchBar() {
         placeholder="Movie title.."
         className="mr-sm-2"
       />
-      <Button variant="outline-light" type="submit">
+      <Button variant="secondary" className="my-2 my-sm-0" type="submit" onClick={handleCollapse}>
         Search
       </Button>
     </Form>
