@@ -20,8 +20,8 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
 
   return (
     <>
-      <h2>Search results for:</h2>
-      <h3>{title}</h3>
+      <h2 className="mt-3">{title}</h2>
+      <h3 className="mb-5">results</h3>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
