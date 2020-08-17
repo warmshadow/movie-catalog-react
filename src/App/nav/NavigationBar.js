@@ -27,11 +27,9 @@ function NavigationBar({ auth, profile }) {
         <Link onClick={handleCollapse} to="/">
           <div className="d-flex flex-column justify-content-center align-items-center mr-3">
             <Navbar.Brand className="mr-0">Movie Catalog</Navbar.Brand>
-            {firstName ? (
-              <span className="text-info text-uppercase">{`${firstName} ${lastName}`}</span>
-            ) : (
-              <span className="text-info text-uppercase">React</span>
-            )}
+            <span className="text-info text-uppercase" style={{ fontSize: '0.8rem' }}>
+              {`${firstName || 'React'} ${lastName || ''}`}
+            </span>
           </div>
         </Link>
       </Navbar.Brand>
