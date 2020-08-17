@@ -3,7 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
-import { Provider } from 'react-redux';
+import Spinner from 'react-bootstrap/Spinner';
+import { Provider, useSelector } from 'react-redux';
 import { createFirestoreInstance } from 'redux-firestore';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import firebase from 'firebase/app';
@@ -19,11 +20,19 @@ const rrfProps = {
   createFirestoreInstance,
 };
 
+function AuthIsLoaded({ children }) {
+  const auth = useSelector((state) => state.firebase.auth);
+  if (!auth.isLoaded) return <Spinner animation="border" />;
+  return children;
+}
+
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
-        <App />
+        <AuthIsLoaded>
+          <App />
+        </AuthIsLoaded>
       </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,
