@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import { addMovieToList as addMovieToListAction } from '../actions';
 
 function ListsModal({ show, handleClose, userMovieLists, auth, movie, addMovieToList }) {
-  if (userMovieLists) {
+  if (userMovieLists && auth.uid) {
     const currUserMovieLists = userMovieLists.filter((list) => list.userId === auth.uid);
 
     if (currUserMovieLists.length === 0) return <h3>No lists found</h3>;
