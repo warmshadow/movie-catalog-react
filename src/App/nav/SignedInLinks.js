@@ -1,15 +1,28 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Nav from 'react-bootstrap/Nav';
 import { NavLink } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import { signOut as signOutAction } from '../actions/authActions';
 
-function SignedInLinks() {
+function SignedInLinks({ signOut }) {
   return (
     <Nav className="ml-auto">
-      <NavLink to="/">My Lists</NavLink>
-      <NavLink to="/">Log Out</NavLink>
-      <NavLink to="/">KL</NavLink>
+      <NavLink to="/">
+        <Button variant="link">My Lists</Button>
+      </NavLink>
+      <Button variant="link" onClick={signOut}>
+        Log Out
+      </Button>
+      <NavLink to="/">
+        <Button variant="link">KL</Button>
+      </NavLink>
     </Nav>
   );
 }
 
-export default SignedInLinks;
+const mapDispatchToProps = {
+  signOut: signOutAction,
+};
+
+export default connect(null, mapDispatchToProps)(SignedInLinks);

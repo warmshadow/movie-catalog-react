@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { signIn as signInAction } from '../actions/authActions';
 
-function SignIn() {
+function SignIn({ authError, signIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(email, password);
+    signIn({ email, password });
   }
   return (
     <Form onSubmit={handleSubmit}>
@@ -34,14 +36,22 @@ function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Form.Group>
-      <Form.Group controlId="checkbox">
-        <Form.Check type="checkbox" label="Check me out" />
-      </Form.Group>
       <Button variant="primary" type="submit">
         Sign In
       </Button>
+      {authError && <p>{authError}</p>}
     </Form>
   );
 }
 
-export default SignIn;
+const mapStateToProps = (state) => {
+  return {
+    authError: state.auth.authError,
+  };
+};
+
+const mapDispatchToProps = {
+  signIn: signInAction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
