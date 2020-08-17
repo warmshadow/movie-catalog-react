@@ -1,51 +1,102 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import ListsModal from './ListsModal';
 
-function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl }) {
+function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, auth }) {
+  const [showModal, setShowModal] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState({});
+
+  const history = useHistory();
+
+  const handleClick = (movieObj) => {
+    if (auth.uid) {
+      setSelectedMovie(movieObj);
+      setShowModal(true);
+    } else history.push('/signin');
+  };
+
+  const handleClose = () => setShowModal(false);
+
+  const {
+    poster_path: posterPath,
+    title,
+    tagline,
+    runtime,
+    vote_average: voteAverage,
+    original_language: originalLanguage,
+    overview,
+    genres,
+    imdb_id: imdbId,
+    homepage,
+  } = movie;
+
   return (
-    <Jumbotron className="bg-white">
-      <Row noGutters style={{ width: '100%' }}>
-        <Col md={4}>
-          <Card.Img
-            src={`${baseUrl}w780${movie.poster_path}`}
-            alt="poster"
-            style={{ maxHeight: '100%' }}
-          />
-        </Col>
-        <Col md={8}>
-          <Card className="bg-transparent border-0">
-            <Card.Body>
-              <Card.Title>{movie.title}</Card.Title>
-              <Card.Text>{movie.tagline}</Card.Text>
-              {directors.map((director) => (
-                <Card.Text>{director.name}</Card.Text>
-              ))}
-              <Card.Subtitle>{movie.runtime}</Card.Subtitle>
-              <Card.Subtitle>{movie.vote_average}</Card.Subtitle>
-              <Card.Subtitle>{movie.original_language}</Card.Subtitle>
-              {movie.genres.map((genre) => (
-                <Card.Subtitle key={genre.id}>{genre.name}</Card.Subtitle>
-              ))}
-              <Card.Text>{movie.overview}</Card.Text>
-              {movie.imdb_id && (
-                <Button variant="warning" href={`${imdbBaseUrl}${movie.imdb_id}`} target="_blank">
-                  IMDB
+    <>
+      <Jumbotron className="bg-white">
+        <Row noGutters style={{ width: '100%', display: 'flex', flexWrap: 'wrap' }}>
+          <Col md={4} style={{ display: 'flex' }}>
+            <Card.Img
+              src={`${baseUrl}w780${posterPath}`}
+              alt="poster"
+              style={{ maxHeight: '100%' }}
+            />
+          </Col>
+          <Col md={8} style={{ display: 'flex' }}>
+            <Card className="bg-transparent border-0">
+              <Card.Body>
+                <Card.Title>{title}</Card.Title>
+                <Card.Text className="font-italic" key={tagline}>
+                  {tagline}
+                </Card.Text>
+                {directors.map((director) => (
+                  <Card.Text key={director.name}>{`Dir. ${director.name}`}</Card.Text>
+                ))}
+                <Card.Text key={voteAverage}>
+                  {`${voteAverage} / ${runtime}min / ${originalLanguage}`}
+                </Card.Text>
+                {genres.map((genre) => (
+                  <Card.Text className="d-inline" key={genre.id}>
+                    {`${genre.name}  `}
+                  </Card.Text>
+                ))}
+                <Card.Subtitle
+                  className="text-muted font-italic my-3"
+                  key={overview.substring(0, 9)}
+                >
+                  {overview}
+                </Card.Subtitle>
+                {imdbId && (
+                  <Button
+                    key={imdbId}
+                    variant="warning"
+                    href={`${imdbBaseUrl}${imdbId}`}
+                    target="_blank"
+                  >
+                    IMDB
+                  </Button>
+                )}
+                {homepage && (
+                  <Button key={homepage} variant="info" href={homepage} target="_blank">
+                    Homepage
+                  </Button>
+                )}
+              </Card.Body>
+              <Card.Footer>
+                <Button variant="outline-dark" onClick={() => handleClick(movie)}>
+                  Add to List
                 </Button>
-              )}
-              {movie.homepage && (
-                <Button variant="info" href={movie.homepage} target="_blank">
-                  Homepage
-                </Button>
-              )}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Jumbotron>
+              </Card.Footer>
+            </Card>
+          </Col>
+        </Row>
+      </Jumbotron>
+      <ListsModal show={showModal} movie={selectedMovie} handleClose={handleClose} />
+    </>
   );
 }
 

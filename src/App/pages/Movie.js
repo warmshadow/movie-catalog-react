@@ -7,7 +7,7 @@ import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
 import pageIsInt from '../helpers';
 
-function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar }) {
+function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar, auth }) {
   const { id, pageNum } = useParams();
   const basePath = `/movie/${id}`;
 
@@ -33,8 +33,9 @@ function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar
         directors={directors}
         baseUrl={baseUrl}
         imdbBaseUrl={imdbBaseUrl}
+        auth={auth}
       />
-      <h3>Similar movies:</h3>
+      <h3 className="mb-5">Similar movies:</h3>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
@@ -46,6 +47,7 @@ const mapStateToProps = (state) => {
     baseUrl: state.config.images.secure_base_url,
     imdbBaseUrl: state.config.imdbBaseUrl,
     movies: state.movies,
+    auth: state.firebase.auth,
   };
 };
 
