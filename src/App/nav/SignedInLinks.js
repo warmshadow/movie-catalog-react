@@ -5,7 +5,8 @@ import { NavLink } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { signOut as signOutAction } from '../actions/authActions';
 
-function SignedInLinks({ signOut }) {
+function SignedInLinks({ profile, signOut }) {
+  const { firstName, lastName } = profile;
   return (
     <Nav className="ml-auto">
       <NavLink to="/">
@@ -15,7 +16,7 @@ function SignedInLinks({ signOut }) {
         Log Out
       </Button>
       <NavLink to="/">
-        <Button variant="link">KL</Button>
+        <Button variant="link">{`${firstName} ${lastName}`}</Button>
       </NavLink>
     </Nav>
   );

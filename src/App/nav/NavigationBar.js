@@ -6,14 +6,14 @@ import SearchBar from '../components/SearchBar';
 import SignedInLinks from './SignedInLinks';
 import SignedOutLinks from './SignedOutLinks';
 
-function NavigationBar({ auth }) {
+function NavigationBar({ auth, profile }) {
   return (
     <Navbar bg="dark" variant="dark" fixed="top">
       <Link to="/">
         <Navbar.Brand>Movie Catalog</Navbar.Brand>
       </Link>
       <SearchBar />
-      {auth.uid ? <SignedInLinks /> : <SignedOutLinks />}
+      {auth.uid ? <SignedInLinks profile={profile} /> : <SignedOutLinks />}
     </Navbar>
   );
 }
@@ -21,6 +21,7 @@ function NavigationBar({ auth }) {
 const mapStateToProps = (state) => {
   return {
     auth: state.firebase.auth,
+    profile: state.firebase.profile,
   };
 };
 
