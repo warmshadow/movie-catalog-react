@@ -49,7 +49,6 @@ const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
 };
 
 const createUserMovieList = (list) => async (dispatch, getState, { getFirestore }) => {
-  // make async call to db
   try {
     const firestore = getFirestore();
     const userId = getState().firebase.auth.uid;
@@ -64,6 +63,27 @@ const createUserMovieList = (list) => async (dispatch, getState, { getFirestore 
   }
 };
 
+const addMovieToList = (list, movie) => async (dispatch, getState, { getFirestore }) => {
+  const { id, poster_path: posterPath, release_date: releaseDate, title } = movie;
+  try {
+    const firestore = getFirestore();
+    await firestore
+      .collection('userMovieLists')
+      .doc(list.id)
+      .update({
+        movies: firestore.FieldValue.arrayUnion({
+          id,
+          posterPath,
+          releaseDate,
+          title,
+        }),
+      });
+    dispatch({ type: 'ADD_MOVIE_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'ADD_MOVIE_ERROR' });
+  }
+};
+
 export {
   setConfig,
   setMoviesCategory,
@@ -71,4 +91,5 @@ export {
   setMovie,
   setMoviesSimilar,
   createUserMovieList,
+  addMovieToList,
 };

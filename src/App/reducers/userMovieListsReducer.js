@@ -6,6 +6,12 @@ const userMovieListsReducer = (state = { isPending: true }, action) => {
     case 'CREATE_MOVIE_LIST_ERROR':
       console.log('error in creating movie list');
       return state;
+    case 'ADD_MOVIE_SUCCESS':
+      console.log('successfully added movie to list');
+      return state;
+    case 'ADD_MOVIE_ERROR':
+      console.log('error adding movie to list');
+      return state;
     default:
       return state;
   }
