@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import { signUp as signUpAction } from '../actions/authActions';
 
-function SignUp() {
+function SignUp({ auth, authError, signUp }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -10,8 +13,11 @@ function SignUp() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(email, password, firstName, lastName);
+    signUp({ email, password, firstName, lastName });
   }
+
+  if (auth.uid) return <Redirect to="/" />;
+
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group controlId="email">
@@ -54,14 +60,23 @@ function SignUp() {
           onChange={(e) => setLastName(e.target.value)}
         />
       </Form.Group>
-      <Form.Group controlId="checkbox">
-        <Form.Check type="checkbox" label="Check me out" />
-      </Form.Group>
       <Button variant="primary" type="submit">
         Sign In
       </Button>
+      {authError && <p>{authError}</p>}
     </Form>
   );
 }
 
-export default SignUp;
+const mapStateToProps = (state) => {
+  return {
+    auth: state.firebase.auth,
+    authError: state.auth.authError,
+  };
+};
+
+const mapDispatchToProps = {
+  signUp: signUpAction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

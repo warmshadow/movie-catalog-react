@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { signIn as signInAction } from '../actions/authActions';
 
-function SignIn({ authError, signIn }) {
+function SignIn({ auth, authError, signIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -12,6 +13,9 @@ function SignIn({ authError, signIn }) {
     e.preventDefault();
     signIn({ email, password });
   }
+
+  if (auth.uid) return <Redirect to="/" />;
+
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group controlId="email">
@@ -47,6 +51,7 @@ function SignIn({ authError, signIn }) {
 const mapStateToProps = (state) => {
   return {
     authError: state.auth.authError,
+    auth: state.firebase.auth,
   };
 };
 
