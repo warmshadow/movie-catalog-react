@@ -5,7 +5,7 @@ import clsx from 'clsx';
 
 function Wrapper({ page, children }) {
   const firstPage = page === 1;
-  const classes = clsx('d-flex', {
+  const classes = clsx('d-flex', 'mb-3', {
     'justify-content-end': firstPage,
     'justify-content-between': !firstPage,
   });

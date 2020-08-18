@@ -35,7 +35,7 @@ function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar
         imdbBaseUrl={imdbBaseUrl}
         auth={auth}
       />
-      <h3 className="mb-5">Similar movies:</h3>
+      <h3 className="mt-5 mb-5">Similar movies:</h3>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
