@@ -56,7 +56,7 @@ function Category({ movies, baseUrl, setMoviesCategory }) {
 
   return (
     <>
-      <h2 className="mt-3 mb-5">{`${CATEGORIES[title].name} MOVIES`}</h2>
+      <h2 className="font-italic mt-3 mb-5">{`${CATEGORIES[title].name} MOVIES`}</h2>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );

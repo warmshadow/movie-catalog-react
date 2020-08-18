@@ -16,7 +16,7 @@ function List({ auth, userMovieList, requesting, baseUrl }) {
 
       return (
         <div>
-          <h2>{userMovieList.name}</h2>
+          <h2 className="mt-3 mb-5">{userMovieList.name}</h2>
           {userMovieList.movies ? (
             userMovieList.movies.map((movie) => {
               const { id, posterPath, title, releaseDate } = movie;

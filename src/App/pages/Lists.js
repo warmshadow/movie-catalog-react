@@ -18,16 +18,16 @@ function Lists({ auth, userMovieLists, createUserMovieList }) {
 
     return (
       <div>
-        <h2>My lists:</h2>
-        <ListGroup className="mb-5">
+        <h2 className="font-italic mb-4">My lists:</h2>
+        <ListGroup className="mb-4">
           {currUserMovieLists.map((list) => {
             const { id, name, createdAt } = list;
             const date = moment(createdAt.toDate()).format('MMM D, YYYY');
             return (
-              <ListGroup.Item>
-                <Link to={`/lists/${id}`}>
-                  <h4>{name}</h4>
-                  <h5>{date}</h5>
+              <ListGroup.Item key={id}>
+                <Link className="text-decoration-none" to={`/lists/${id}`}>
+                  <h5>{name}</h5>
+                  <h6>{date}</h6>
                 </Link>
               </ListGroup.Item>
             );
