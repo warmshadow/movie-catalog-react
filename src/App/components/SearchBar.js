@@ -7,14 +7,17 @@ function SearchBar({ handleCollapse }) {
   const [value, setValue] = useState('');
   const history = useHistory();
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     setValue(e.target.value);
-  }
+  };
 
-  function handleSearch(e) {
+  const handleSearch = (e) => {
     e.preventDefault();
-    if (value) history.push(`/search/${value}`);
-  }
+    if (value) {
+      history.push(`/search/${value}`);
+      setValue('');
+    }
+  };
 
   return (
     <Form inline onSubmit={handleSearch} className="d-flex justify-content-center my-2 my-lg-0">
