@@ -84,6 +84,21 @@ const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirest
   }
 };
 
+const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getFirestore }) => {
+  try {
+    const firestore = getFirestore();
+    await firestore
+      .collection('userMovieLists')
+      .doc(listId)
+      .update({
+        movies: firestore.FieldValue.arrayRemove(movie),
+      });
+    dispatch({ type: 'REMOVE_MOVIE_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'REMOVE_MOVIE_ERROR', payload: err });
+  }
+};
+
 export {
   setConfig,
   setMoviesCategory,
@@ -92,4 +107,5 @@ export {
   setMoviesSimilar,
   createUserMovieList,
   addMovieToList,
+  removeMovieFromList,
 };

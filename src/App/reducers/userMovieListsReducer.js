@@ -14,6 +14,13 @@ const userMovieListsReducer = (state = { isPending: true }, action) => {
     case 'ADD_MOVIE_ERROR':
       console.log('error adding movie to list');
       return state;
+    case 'REMOVE_MOVIE_SUCCESS':
+      // temporary alert
+      alert('successfully removed movie from list');
+      return state;
+    case 'REMOVE_MOVIE_ERROR':
+      console.log('error removing movie from list', action.payload);
+      return state;
     default:
       return state;
   }
