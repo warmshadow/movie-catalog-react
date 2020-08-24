@@ -8,13 +8,11 @@ import ListsModal from './ListsModal';
 
 function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, auth }) {
   const [showModal, setShowModal] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState({});
 
   const history = useHistory();
 
-  const handleClick = (movieObj) => {
+  const handleClick = () => {
     if (auth.uid) {
-      setSelectedMovie(movieObj);
       setShowModal(true);
     } else history.push('/signin');
   };
@@ -89,7 +87,7 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, auth }) {
           </Card>
         </Col>
       </Row>
-      <ListsModal show={showModal} movie={selectedMovie} handleClose={handleClose} />
+      <ListsModal show={showModal} movie={movie} handleClose={handleClose} />
     </>
   );
 }
