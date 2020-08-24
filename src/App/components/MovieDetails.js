@@ -11,7 +11,7 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, auth }) {
 
   const history = useHistory();
 
-  const handleClick = () => {
+  const handleAdd = () => {
     if (auth.uid) {
       setShowModal(true);
     } else history.push('/signin');
@@ -80,7 +80,7 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, auth }) {
               )}
             </Card.Body>
             <Card.Footer>
-              <Button variant="outline-dark" onClick={() => handleClick(movie)}>
+              <Button variant="outline-dark" onClick={() => handleAdd(movie)}>
                 Add to List
               </Button>
             </Card.Footer>

@@ -5,8 +5,18 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-const Options = ({ remove }) => {
-  if (!remove) return null;
+const Options = ({ remove, add }) => {
+  const RemoveButton = () => (
+    <Button variant="outline-dark" onClick={remove}>
+      Remove
+    </Button>
+  );
+
+  const AddButton = () => (
+    <Button variant="outline-dark" onClick={add}>
+      Add To List
+    </Button>
+  );
 
   return (
     <Card.Body
@@ -17,14 +27,12 @@ const Options = ({ remove }) => {
         zIndex: 100,
       }}
     >
-      <Button variant="outline-dark" onClick={remove}>
-        Remove
-      </Button>
+      {remove ? <RemoveButton /> : <AddButton />}
     </Card.Body>
   );
 };
 
-function MovieCard({ id, posterPath, title, releaseDate, baseUrl, remove }) {
+function MovieCard({ id, posterPath, title, releaseDate, baseUrl, remove, add }) {
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">
       <Row noGutters style={{ width: '100%' }}>
@@ -37,7 +45,7 @@ function MovieCard({ id, posterPath, title, releaseDate, baseUrl, remove }) {
             <Card.Title>{title}</Card.Title>
             <Card.Subtitle>{releaseDate}</Card.Subtitle>
           </Card.Body>
-          <Options remove={remove} />
+          <Options remove={remove} add={add} />
         </Col>
       </Row>
     </Card>
