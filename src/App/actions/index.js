@@ -63,13 +63,13 @@ const createUserMovieList = (list) => async (dispatch, getState, { getFirestore 
   }
 };
 
-const addMovieToList = (list, movie) => async (dispatch, getState, { getFirestore }) => {
+const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirestore }) => {
   const { id, poster_path: posterPath, release_date: releaseDate, title } = movie;
   try {
     const firestore = getFirestore();
     await firestore
       .collection('userMovieLists')
-      .doc(list.id)
+      .doc(listId)
       .update({
         movies: firestore.FieldValue.arrayUnion({
           id,

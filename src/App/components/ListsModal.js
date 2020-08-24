@@ -25,7 +25,7 @@ function ListsModal({ show, handleClose, userMovieLists, auth, movie, addMovieTo
                 <ListGroup.Item
                   action
                   onClick={() => {
-                    addMovieToList(list, movie);
+                    addMovieToList(list.id, movie);
                     handleClose();
                   }}
                   key={list.id}
