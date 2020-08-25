@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory, Redirect } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
 import { setMoviesCategory as setMoviesCategoryAction } from '../actions';
 import MovieList from '../components/MovieList';
 import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
+import useAddToList from '../hooks/useAddToList';
 
 const CATEGORIES = {
   toprated: {
@@ -38,24 +39,11 @@ const CATEGORIES = {
   },
 };
 
-function Category({ auth, movies, baseUrl, setMoviesCategory }) {
+function Category({ movies, baseUrl, setMoviesCategory }) {
   const { title, pageNum } = useParams();
   const basePath = `/category/${title}`;
 
-  // Add to List modal window logic
-  const [selectedMovie, setSelectedMovie] = useState({});
-  const [showModal, setShowModal] = useState(false);
-
-  const history = useHistory();
-
-  const handleAdd = (movie) => {
-    if (auth.uid) {
-      setSelectedMovie(movie);
-      setShowModal(true);
-    } else history.push('/signin');
-  };
-
-  const handleClose = () => setShowModal(false);
+  const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
 
   useEffect(() => {
     if (CATEGORIES[title]) {
