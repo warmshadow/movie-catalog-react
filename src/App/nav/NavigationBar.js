@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
-import SearchBar from '../components/SearchBar';
+import { signOut as signOutAction } from '../actions/authActions';
 import SignedInLinks from './SignedInLinks';
 import SignedOutLinks from './SignedOutLinks';
+import SearchBar from '../components/SearchBar';
 
-function NavigationBar({ auth, profile }) {
+function NavigationBar({ auth, profile, signOut }) {
   const [expanded, setExpanded] = useState(false);
 
   const handleCollapse = () => {
@@ -36,7 +37,7 @@ function NavigationBar({ auth, profile }) {
       <Navbar.Toggle onClick={() => setExpanded(expanded ? false : 'expanded')} />
       <Navbar.Collapse>
         {auth.uid ? (
-          <SignedInLinks handleCollapse={handleCollapse} />
+          <SignedInLinks signOut={signOut} handleCollapse={handleCollapse} />
         ) : (
           <SignedOutLinks handleCollapse={handleCollapse} />
         )}
@@ -53,4 +54,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(NavigationBar);
+const mapDispatchToProps = {
+  signOut: signOutAction,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationBar);

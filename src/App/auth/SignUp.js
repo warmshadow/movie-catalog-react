@@ -70,8 +70,8 @@ function SignUp({ auth, authError, signUp }) {
 
 const mapStateToProps = (state) => {
   return {
-    auth: state.firebase.auth,
     authError: state.auth.authError,
+    auth: state.firebase.auth,
   };
 };
 

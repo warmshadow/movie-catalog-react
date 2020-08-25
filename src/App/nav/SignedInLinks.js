@@ -1,9 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import Nav from 'react-bootstrap/Nav';
 import { NavLink } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import { signOut as signOutAction } from '../actions/authActions';
 
 function SignedInLinks({ handleCollapse, signOut }) {
   return (
@@ -24,8 +22,4 @@ function SignedInLinks({ handleCollapse, signOut }) {
   );
 }
 
-const mapDispatchToProps = {
-  signOut: signOutAction,
-};
-
-export default connect(null, mapDispatchToProps)(SignedInLinks);
+export default SignedInLinks;
