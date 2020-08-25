@@ -34,7 +34,6 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
 
 const mapStateToProps = (state) => {
   return {
-    auth: state.firebase.auth,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
   };
