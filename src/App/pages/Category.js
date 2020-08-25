@@ -37,7 +37,7 @@ const CATEGORIES = {
   },
 };
 
-function Category({ movies, baseUrl, setMoviesCategory }) {
+function Category({ auth, movies, baseUrl, setMoviesCategory }) {
   const { title, pageNum } = useParams();
   const basePath = `/category/${title}`;
 
@@ -57,13 +57,14 @@ function Category({ movies, baseUrl, setMoviesCategory }) {
   return (
     <>
       <h2 className="font-italic mt-3 mb-5">{`${CATEGORIES[title].name} MOVIES`}</h2>
-      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
+      <MovieList auth={auth} movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
 }
 
 const mapStateToProps = (state) => {
   return {
+    auth: state.firebase.auth,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
   };

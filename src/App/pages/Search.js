@@ -6,7 +6,7 @@ import { setMoviesSearch as setMoviesSearchAction } from '../actions';
 import MovieList from '../components/MovieList';
 import pageIsInt from '../helpers';
 
-function Search({ movies, setMoviesSearch, baseUrl }) {
+function Search({ auth, movies, setMoviesSearch, baseUrl }) {
   const { title, pageNum } = useParams();
   const basePath = `/search/${title}`;
 
@@ -22,13 +22,14 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
     <>
       <h2 className="mt-3">{title}</h2>
       <h3 className="mb-5">results</h3>
-      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
+      <MovieList auth={auth} movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
 }
 
 const mapStateToProps = (state) => {
   return {
+    auth: state.firebase.auth,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
   };

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieCard from './MovieCard';
 import PageLinks from './PageLinks';
@@ -47,10 +46,4 @@ function MovieList({ movies, baseUrl, basePath, auth }) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    auth: state.firebase.auth,
-  };
-};
-
-export default connect(mapStateToProps)(MovieList);
+export default MovieList;
