@@ -1,14 +1,30 @@
-import React, { useEffect } from 'react';
-import { useParams, Redirect } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useHistory, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
 import { setMoviesSearch as setMoviesSearchAction } from '../actions';
 import MovieList from '../components/MovieList';
+import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
 
 function Search({ auth, movies, setMoviesSearch, baseUrl }) {
   const { title, pageNum } = useParams();
   const basePath = `/search/${title}`;
+
+  // Add to List modal window logic
+  const [selectedMovie, setSelectedMovie] = useState({});
+  const [showModal, setShowModal] = useState(false);
+
+  const history = useHistory();
+
+  const handleAdd = (movie) => {
+    if (auth.uid) {
+      setSelectedMovie(movie);
+      setShowModal(true);
+    } else history.push('/signin');
+  };
+
+  const handleClose = () => setShowModal(false);
 
   useEffect(() => {
     setMoviesSearch(title, pageNum);
@@ -22,7 +38,8 @@ function Search({ auth, movies, setMoviesSearch, baseUrl }) {
     <>
       <h2 className="mt-3">{title}</h2>
       <h3 className="mb-5">results</h3>
-      <MovieList auth={auth} movies={movies} baseUrl={baseUrl} basePath={basePath} />
+      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} addToList={handleAdd} />
+      <ListsModal show={showModal} movie={selectedMovie} handleClose={handleClose} />
     </>
   );
 }

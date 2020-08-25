@@ -1,25 +1,9 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieCard from './MovieCard';
 import PageLinks from './PageLinks';
-import ListsModal from './ListsModal';
 
-function MovieList({ movies, baseUrl, basePath, auth }) {
-  const [selectedMovie, setSelectedMovie] = useState({});
-  const [showModal, setShowModal] = useState(false);
-
-  const history = useHistory();
-
-  const handleAdd = (movie) => {
-    if (auth.uid) {
-      setSelectedMovie(movie);
-      setShowModal(true);
-    } else history.push('/signin');
-  };
-
-  const handleClose = () => setShowModal(false);
-
+function MovieList({ movies, baseUrl, basePath, addToList }) {
   if (movies.isPending) return <Spinner animation="border" />;
 
   return movies.results.length ? (
@@ -34,12 +18,11 @@ function MovieList({ movies, baseUrl, basePath, auth }) {
             releaseDate={releaseDate}
             baseUrl={baseUrl}
             key={id}
-            add={() => handleAdd(movie)}
+            add={() => addToList(movie)}
           />
         );
       })}
       <PageLinks page={movies.page} totalPages={movies.total_pages} basePath={basePath} />
-      <ListsModal show={showModal} movie={selectedMovie} handleClose={handleClose} />
     </>
   ) : (
     <h2>No Items found</h2>

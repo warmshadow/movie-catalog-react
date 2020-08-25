@@ -1,24 +1,10 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import ListsModal from './ListsModal';
 
-function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, auth }) {
-  const [showModal, setShowModal] = useState(false);
-
-  const history = useHistory();
-
-  const handleAdd = () => {
-    if (auth.uid) {
-      setShowModal(true);
-    } else history.push('/signin');
-  };
-
-  const handleClose = () => setShowModal(false);
-
+function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList }) {
   const {
     poster_path: posterPath,
     title,
@@ -80,14 +66,13 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, auth }) {
               )}
             </Card.Body>
             <Card.Footer>
-              <Button variant="outline-dark" onClick={() => handleAdd(movie)}>
+              <Button variant="outline-dark" onClick={() => addToList(movie)}>
                 Add to List
               </Button>
             </Card.Footer>
           </Card>
         </Col>
       </Row>
-      <ListsModal show={showModal} movie={movie} handleClose={handleClose} />
     </>
   );
 }
