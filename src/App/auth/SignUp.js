@@ -60,7 +60,7 @@ function SignUp({ auth, authError, signUp }) {
           />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Sign In
+          Sign Up
         </Button>
         {authError && <p>{authError}</p>}
       </Form>
