@@ -55,6 +55,7 @@ const createMediaList = (list) => async (dispatch, getState, { getFirestore }) =
     await firestore.collection('mediaLists').add({
       ...list,
       userId,
+      items: [],
       createdAt: new Date(),
     });
     dispatch({ type: 'CREATE_MOVIE_LIST_SUCCESS' });

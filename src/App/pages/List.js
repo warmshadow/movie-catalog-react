@@ -18,7 +18,7 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
       return (
         <div>
           <h2 className="mt-3 mb-5">{mediaList.name}</h2>
-          {mediaList.items && mediaList.items.length !== 0 ? (
+          {mediaList.items.length !== 0 ? (
             mediaList.items.map((item) => {
               const { id, posterPath, title, releaseDate } = item;
               return (
