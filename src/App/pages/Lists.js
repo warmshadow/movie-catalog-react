@@ -6,10 +6,31 @@ import { Link, Redirect } from 'react-router-dom';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import moment from 'moment';
-import { createMediaList as createMediaListAction } from '../actions';
+import Button from 'react-bootstrap/Button';
+import {
+  createMediaList as createMediaListAction,
+  deleteMediaList as deleteMediaListAction,
+} from '../actions';
 import CreateList from '../components/CreateList';
 
-function Lists({ auth, mediaLists, createMediaList }) {
+const Options = ({ deleteMediaList }) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        right: 0,
+        zIndex: 100,
+        padding: '1.25rem',
+      }}
+    >
+      <Button variant="outline-danger" className="btn-sm" onClick={deleteMediaList}>
+        Delete List
+      </Button>
+    </div>
+  );
+};
+
+function Lists({ auth, mediaLists, createMediaList, deleteMediaList }) {
   if (!auth.uid) return <Redirect to="/signin" />;
 
   if (mediaLists) {
@@ -24,11 +45,16 @@ function Lists({ auth, mediaLists, createMediaList }) {
             const { id, name, createdAt } = list;
             const date = moment(createdAt.toDate()).format('MMM D, YYYY');
             return (
-              <ListGroup.Item key={id}>
-                <Link className="text-decoration-none" to={`/lists/${id}`}>
+              <ListGroup.Item
+                className="listItem d-flex align-items-center justify-content-center"
+                key={id}
+              >
+                <Link className="text-decoration-none stretched-link" to={`/lists/${id}`} />
+                <div>
                   <h5>{name}</h5>
                   <h6>{date}</h6>
-                </Link>
+                </div>
+                <Options deleteMediaList={() => deleteMediaList(list)} />
               </ListGroup.Item>
             );
           })}
@@ -50,6 +76,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   createMediaList: createMediaListAction,
+  deleteMediaList: deleteMediaListAction,
 };
 
 export default compose(

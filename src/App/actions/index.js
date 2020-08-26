@@ -58,9 +58,20 @@ const createMediaList = (list) => async (dispatch, getState, { getFirestore }) =
       items: [],
       createdAt: new Date(),
     });
-    dispatch({ type: 'CREATE_MOVIE_LIST_SUCCESS' });
+    dispatch({ type: 'CREATE_MEDIA_LIST_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'CREATE_MOVIE_LIST_ERROR' });
+    dispatch({ type: 'CREATE_MEDIA_LIST_ERROR' });
+  }
+};
+
+const deleteMediaList = (list) => async (dispatch, getState, { getFirestore }) => {
+  try {
+    const firestore = getFirestore();
+    await firestore.collection('mediaLists').doc(list.id).delete();
+
+    dispatch({ type: 'DELETE_MEDIA_LIST_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'DELETE_MEDIA_LIST_ERROR' });
   }
 };
 
@@ -107,6 +118,7 @@ export {
   setMovie,
   setMoviesSimilar,
   createMediaList,
+  deleteMediaList,
   addMovieToList,
   removeMovieFromList,
 };

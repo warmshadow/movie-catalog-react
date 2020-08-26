@@ -2,10 +2,17 @@ const mediaListsReducer = (state = { isPending: true }, action) => {
   switch (action.type) {
     case 'CREATE_MEDIA_LIST_SUCCESS':
       // temporary alert
-      alert('successfully created movie list');
+      alert('successfully created media list');
       return state;
     case 'CREATE_MEDIA_LIST_ERROR':
-      console.log('error in creating movie list');
+      console.log('error in creating media list');
+      return state;
+    case 'DELETE_MEDIA_LIST_SUCCESS':
+      // temporary alert
+      alert('successfully deleted media list');
+      return state;
+    case 'DELETE_MEDIA_LIST_ERROR':
+      console.log('error in deleting media list');
       return state;
     case 'ADD_MOVIE_SUCCESS':
       // temporary alert

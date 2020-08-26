@@ -10,3 +10,7 @@
   opacity: 1;
   transition: 0.3s;
 }
+
+.listItem:hover {
+  color: #1a1a1a;
+}
