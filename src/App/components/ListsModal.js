@@ -7,11 +7,11 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import { addMovieToList as addMovieToListAction } from '../actions';
 
-function ListsModal({ show, handleClose, userMovieLists, auth, movie, addMovieToList }) {
-  if (userMovieLists && auth.uid) {
-    const currUserMovieLists = userMovieLists.filter((list) => list.userId === auth.uid);
+function ListsModal({ show, handleClose, mediaLists, auth, item, addMovieToList }) {
+  if (mediaLists && auth.uid) {
+    const userMediaLists = mediaLists.filter((list) => list.userId === auth.uid);
 
-    if (currUserMovieLists.length === 0) return <h3>No lists found</h3>;
+    if (userMediaLists.length === 0) return <h3>No lists found</h3>;
 
     return (
       <Modal show={show} onHide={handleClose}>
@@ -20,12 +20,12 @@ function ListsModal({ show, handleClose, userMovieLists, auth, movie, addMovieTo
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
-            {currUserMovieLists.length !== 0 ? (
-              currUserMovieLists.map((list) => (
+            {userMediaLists.length !== 0 ? (
+              userMediaLists.map((list) => (
                 <ListGroup.Item
                   action
                   onClick={() => {
-                    addMovieToList(list.id, movie);
+                    addMovieToList(list.id, item);
                     handleClose();
                   }}
                   key={list.id}
@@ -50,9 +50,9 @@ function ListsModal({ show, handleClose, userMovieLists, auth, movie, addMovieTo
 }
 
 const mapStateToProps = (state) => {
-  const { userMovieLists } = state.firestore.ordered;
+  const { mediaLists } = state.firestore.ordered;
   return {
-    userMovieLists,
+    mediaLists,
     auth: state.firebase.auth,
   };
 };
@@ -63,5 +63,5 @@ const mapDispatchToProps = {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'userMovieLists' }])
+  firestoreConnect([{ collection: 'mediaLists' }])
 )(ListsModal);

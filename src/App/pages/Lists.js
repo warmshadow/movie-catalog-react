@@ -6,21 +6,21 @@ import { Link, Redirect } from 'react-router-dom';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import moment from 'moment';
-import { createUserMovieList as createUserMovieListAction } from '../actions';
+import { createMediaList as createMediaListAction } from '../actions';
 import CreateList from '../components/CreateList';
 
-function Lists({ auth, userMovieLists, createUserMovieList }) {
+function Lists({ auth, mediaLists, createMediaList }) {
   if (!auth.uid) return <Redirect to="/signin" />;
 
-  if (userMovieLists) {
-    const currUserMovieLists = userMovieLists.filter((list) => list.userId === auth.uid);
-    if (currUserMovieLists.length === 0) return <h3>No lists found</h3>;
+  if (mediaLists) {
+    const userMediaLists = mediaLists.filter((list) => list.userId === auth.uid);
+    if (userMediaLists.length === 0) return <h3>No lists found</h3>;
 
     return (
       <div>
         <h2 className="font-italic mb-4">My lists:</h2>
         <ListGroup className="mb-4">
-          {currUserMovieLists.map((list) => {
+          {userMediaLists.map((list) => {
             const { id, name, createdAt } = list;
             const date = moment(createdAt.toDate()).format('MMM D, YYYY');
             return (
@@ -33,7 +33,7 @@ function Lists({ auth, userMovieLists, createUserMovieList }) {
             );
           })}
         </ListGroup>
-        <CreateList createList={createUserMovieList} />
+        <CreateList createList={createMediaList} />
       </div>
     );
   }
@@ -41,18 +41,18 @@ function Lists({ auth, userMovieLists, createUserMovieList }) {
 }
 
 const mapStateToProps = (state) => {
-  const { userMovieLists } = state.firestore.ordered;
+  const { mediaLists } = state.firestore.ordered;
   return {
-    userMovieLists,
+    mediaLists,
     auth: state.firebase.auth,
   };
 };
 
 const mapDispatchToProps = {
-  createUserMovieList: createUserMovieListAction,
+  createMediaList: createMediaListAction,
 };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'userMovieLists' }])
+  firestoreConnect([{ collection: 'mediaLists' }])
 )(Lists);

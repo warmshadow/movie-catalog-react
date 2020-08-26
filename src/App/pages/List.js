@@ -7,20 +7,20 @@ import Spinner from 'react-bootstrap/Spinner';
 import { removeMovieFromList as removeMovieFromListAction } from '../actions';
 import MovieCard from '../components/MovieCard';
 
-function List({ auth, userMovieList, requesting, baseUrl, listId, removeMovieFromList }) {
+function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromList }) {
   if (!auth.uid) return <Redirect to="/signin" />;
 
   if (requesting === false) {
-    if (userMovieList) {
+    if (mediaList) {
       // redirect if list doesn't belong to current user
-      if (userMovieList.userId !== auth.uid) return <Redirect to="/notfound" />;
+      if (mediaList.userId !== auth.uid) return <Redirect to="/notfound" />;
 
       return (
         <div>
-          <h2 className="mt-3 mb-5">{userMovieList.name}</h2>
-          {userMovieList.movies && userMovieList.movies.length !== 0 ? (
-            userMovieList.movies.map((movie) => {
-              const { id, posterPath, title, releaseDate } = movie;
+          <h2 className="mt-3 mb-5">{mediaList.name}</h2>
+          {mediaList.items && mediaList.items.length !== 0 ? (
+            mediaList.items.map((item) => {
+              const { id, posterPath, title, releaseDate } = item;
               return (
                 <>
                   <MovieCard
@@ -30,13 +30,13 @@ function List({ auth, userMovieList, requesting, baseUrl, listId, removeMovieFro
                     releaseDate={releaseDate}
                     baseUrl={baseUrl}
                     key={id}
-                    remove={() => removeMovieFromList(listId, movie)}
+                    remove={() => removeMovieFromList(listId, item)}
                   />
                 </>
               );
             })
           ) : (
-            <h5>No movies in the list</h5>
+            <h5>No items in the list</h5>
           )}
         </div>
       );
@@ -50,13 +50,13 @@ function List({ auth, userMovieList, requesting, baseUrl, listId, removeMovieFro
 const mapStateToProps = (state, ownProps) => {
   const { id } = ownProps.match.params;
   const { firestore } = state;
-  const { userMovieLists } = firestore.data;
-  const userMovieList = userMovieLists ? userMovieLists[id] : null;
-  const requesting = firestore.status.requesting.userMovieLists;
+  const { mediaLists } = firestore.data;
+  const mediaList = mediaLists ? mediaLists[id] : null;
+  const requesting = firestore.status.requesting.mediaLists;
 
   return {
     auth: state.firebase.auth,
-    userMovieList,
+    mediaList,
     requesting,
     baseUrl: state.config.images.secure_base_url,
     listId: id,
@@ -70,5 +70,5 @@ const mapDispatchToProps = {
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'userMovieLists' }])
+  firestoreConnect([{ collection: 'mediaLists' }])
 )(List);

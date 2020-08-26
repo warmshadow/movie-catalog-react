@@ -5,14 +5,14 @@ import authReducer from './authReducer';
 import configReducer from './configReducer';
 import moviesReducer from './moviesReducer';
 import movieReducer from './movieReducer';
-import userMovieListsReducer from './userMovieListsReducer';
+import mediaListsReducer from './mediaListsReducer';
 
 export default combineReducers({
   auth: authReducer,
   config: configReducer,
   movies: moviesReducer,
   movie: movieReducer,
-  userMovieLists: userMovieListsReducer,
+  mediaLists: mediaListsReducer,
   firestore: firestoreReducer,
   firebase: firebaseReducer,
 });

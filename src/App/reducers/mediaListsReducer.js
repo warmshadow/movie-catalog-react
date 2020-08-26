@@ -1,10 +1,10 @@
-const userMovieListsReducer = (state = { isPending: true }, action) => {
+const mediaListsReducer = (state = { isPending: true }, action) => {
   switch (action.type) {
-    case 'CREATE_MOVIE_LIST_SUCCESS':
+    case 'CREATE_MEDIA_LIST_SUCCESS':
       // temporary alert
       alert('successfully created movie list');
       return state;
-    case 'CREATE_MOVIE_LIST_ERROR':
+    case 'CREATE_MEDIA_LIST_ERROR':
       console.log('error in creating movie list');
       return state;
     case 'ADD_MOVIE_SUCCESS':
@@ -26,4 +26,4 @@ const userMovieListsReducer = (state = { isPending: true }, action) => {
   }
 };
 
-export default userMovieListsReducer;
+export default mediaListsReducer;

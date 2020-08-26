@@ -27,7 +27,7 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
       <h2 className="mt-3">{title}</h2>
       <h3 className="mb-5">results</h3>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} addToList={handleAdd} />
-      <ListsModal show={showModal} movie={selectedMovie} handleClose={handleClose} />
+      <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
   );
 }

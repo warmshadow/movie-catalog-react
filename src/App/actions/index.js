@@ -48,11 +48,11 @@ const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIES', payload: res.data });
 };
 
-const createUserMovieList = (list) => async (dispatch, getState, { getFirestore }) => {
+const createMediaList = (list) => async (dispatch, getState, { getFirestore }) => {
   try {
     const firestore = getFirestore();
     const userId = getState().firebase.auth.uid;
-    await firestore.collection('userMovieLists').add({
+    await firestore.collection('mediaLists').add({
       ...list,
       userId,
       createdAt: new Date(),
@@ -68,10 +68,10 @@ const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirest
   try {
     const firestore = getFirestore();
     await firestore
-      .collection('userMovieLists')
+      .collection('mediaLists')
       .doc(listId)
       .update({
-        movies: firestore.FieldValue.arrayUnion({
+        items: firestore.FieldValue.arrayUnion({
           id,
           posterPath,
           releaseDate,
@@ -88,10 +88,10 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   try {
     const firestore = getFirestore();
     await firestore
-      .collection('userMovieLists')
+      .collection('mediaLists')
       .doc(listId)
       .update({
-        movies: firestore.FieldValue.arrayRemove(movie),
+        items: firestore.FieldValue.arrayRemove(movie),
       });
     dispatch({ type: 'REMOVE_MOVIE_SUCCESS' });
   } catch (err) {
@@ -105,7 +105,7 @@ export {
   setMoviesSearch,
   setMovie,
   setMoviesSimilar,
-  createUserMovieList,
+  createMediaList,
   addMovieToList,
   removeMovieFromList,
 };

@@ -41,7 +41,7 @@ function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar
       />
       <h3 className="mt-5 mb-5">Similar movies:</h3>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} addToList={handleAdd} />
-      <ListsModal show={showModal} movie={selectedMovie} handleClose={handleClose} />
+      <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
   );
 }

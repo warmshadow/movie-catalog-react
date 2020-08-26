@@ -62,7 +62,7 @@ function Category({ movies, baseUrl, setMoviesCategory }) {
     <>
       <h2 className="font-italic mt-3 mb-5">{`${CATEGORIES[title].name} MOVIES`}</h2>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} addToList={handleAdd} />
-      <ListsModal show={showModal} movie={selectedMovie} handleClose={handleClose} />
+      <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
   );
 }
