@@ -27,8 +27,8 @@ const rrfProps = {
 };
 
 function AuthIsLoaded({ children }) {
-  const auth = useSelector((state) => state.firebase.auth);
-  if (!auth.isLoaded) return <Spinner animation="border" />;
+  const { auth, profile } = useSelector((state) => state.firebase);
+  if (!auth.isLoaded || !profile.isLoaded) return <Spinner animation="border" />;
   return children;
 }
 
