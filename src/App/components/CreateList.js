@@ -4,28 +4,34 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 
 function CreateList({ createList }) {
-  const [name, setName] = useState('');
+  const [state, setState] = useState({ name: '', error: '' });
+  const { name, error } = state;
 
   const handleChange = (e) => {
-    setName(e.target.value);
+    setState({ ...state, name: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createList({ name });
-    setName('');
+    if (!name.trim()) {
+      setState({ ...state, error: 'Name cannot be empty!' });
+    } else {
+      createList({ name });
+      setState({ name: '', error: '' });
+    }
   };
   return (
     <Form onSubmit={handleSubmit}>
       <Row className="justify-content-center">
         <Form.Group controlId="title" className="col-md-4">
           <Form.Label>New list</Form.Label>
-          <Form.Control type="text" value={name} placeholder="Title" onChange={handleChange} />
+          <Form.Control type="text" value={name} placeholder="Name" onChange={handleChange} />
         </Form.Group>
       </Row>
-      <Button variant="primary" type="submit">
+      <Button variant="primary" type="submit" className="mb-4">
         Create List
       </Button>
+      {error && <div className="text-danger">{error}</div>}
     </Form>
   );
 }
