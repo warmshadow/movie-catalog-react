@@ -25,6 +25,10 @@ export const signUp = (newUser) => async (dispatch, getState, { getFirebase, get
   const firestore = getFirestore();
 
   try {
+    if (!newUser.firstName.trim()) {
+      throw new Error('First name cannot be empty.');
+    }
+
     const res = await firebase
       .auth()
       .createUserWithEmailAndPassword(newUser.email, newUser.password);
