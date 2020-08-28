@@ -41,3 +41,9 @@ export const signUp = (newUser) => async (dispatch, getState, { getFirebase, get
     dispatch({ type: 'SIGNUP_ERROR', err });
   }
 };
+
+export const clearAuthError = () => {
+  return {
+    type: 'CLEAR_AUTH_ERROR',
+  };
+};

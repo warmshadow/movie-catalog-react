@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { signUp as signUpAction } from '../actions/authActions';
+import {
+  signUp as signUpAction,
+  clearAuthError as clearAuthErrorAction,
+} from '../actions/authActions';
 
-function SignUp({ auth, authError, signUp }) {
+function SignUp({ auth, authError, signUp, clearAuthError }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -15,6 +18,12 @@ function SignUp({ auth, authError, signUp }) {
     e.preventDefault();
     signUp({ email, password, firstName, lastName });
   }
+
+  useEffect(() => {
+    return () => {
+      clearAuthError();
+    };
+  }, [clearAuthError]);
 
   if (auth.uid) return <Redirect to="/" />;
 
@@ -77,6 +86,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   signUp: signUpAction,
+  clearAuthError: clearAuthErrorAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
