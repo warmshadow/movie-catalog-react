@@ -15,6 +15,7 @@ import SignIn from './auth/SignIn';
 import SignUp from './auth/SignUp';
 import NotFound from './pages/NotFound';
 import './App.css';
+import { ConfirmationModalContextProvider } from './components/ConfirmationModalContext';
 
 function App({ config, setConfig }) {
   useEffect(() => {
@@ -55,7 +56,9 @@ function App({ config, setConfig }) {
             <Movie />
           </Route>
           <Route exact path="/lists">
-            <Lists />
+            <ConfirmationModalContextProvider>
+              <Lists />
+            </ConfirmationModalContextProvider>
           </Route>
           <Route exact path="/lists/:id">
             <List />
