@@ -41,6 +41,7 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
                   posterPath={posterPath}
                   title={title}
                   releaseDate={releaseDate}
+                  score={3.5}
                   baseUrl={baseUrl}
                   key={id}
                   remove={() => removeFromList(item)}

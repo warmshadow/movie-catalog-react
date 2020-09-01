@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Rating from './Rating';
 
 const Options = ({ remove, add }) => {
   const RemoveButton = () => (
@@ -32,7 +33,7 @@ const Options = ({ remove, add }) => {
   );
 };
 
-function MovieCard({ id, posterPath, title, releaseDate, baseUrl, remove, add }) {
+function MovieCard({ id, posterPath, title, releaseDate, score, baseUrl, remove, add }) {
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">
       <Row noGutters style={{ width: '100%' }}>
@@ -44,6 +45,7 @@ function MovieCard({ id, posterPath, title, releaseDate, baseUrl, remove, add })
           <Card.Body>
             <Card.Title>{title}</Card.Title>
             <Card.Subtitle>{releaseDate}</Card.Subtitle>
+            {score && <Rating score={score} />}
           </Card.Body>
           <Options remove={remove} add={add} />
         </Col>
