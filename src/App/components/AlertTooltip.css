@@ -1,0 +1,12 @@
+.bs-tooltip-left .arrow::before {
+  border-left-color: #fff;
+}
+
+.bs-tooltip-top .arrow::before {
+  border-top-color: #fff;
+}
+
+.tooltip-inner {
+  color: #000;
+  background-color: #fff;
+}

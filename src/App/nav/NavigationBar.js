@@ -9,9 +9,11 @@ import SearchBar from '../components/SearchBar';
 
 function NavigationBar({ auth, profile, signOut }) {
   const [expanded, setExpanded] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const handleCollapse = () => {
     setExpanded(false);
+    if (showTooltip) setShowTooltip(false);
   };
 
   const { firstName, lastName } = profile;
@@ -34,14 +36,18 @@ function NavigationBar({ auth, profile, signOut }) {
           </div>
         </Link>
       </Navbar.Brand>
-      <Navbar.Toggle onClick={() => setExpanded(expanded ? false : 'expanded')} />
+      <Navbar.Toggle onClick={() => (expanded ? handleCollapse() : setExpanded('expanded'))} />
       <Navbar.Collapse>
         {auth.uid ? (
           <SignedInLinks signOut={signOut} handleCollapse={handleCollapse} />
         ) : (
           <SignedOutLinks handleCollapse={handleCollapse} />
         )}
-        <SearchBar handleCollapse={handleCollapse} />
+        <SearchBar
+          handleCollapse={handleCollapse}
+          showTooltip={showTooltip}
+          setShowTooltip={setShowTooltip}
+        />
       </Navbar.Collapse>
     </Navbar>
   );
