@@ -6,8 +6,19 @@ import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import { removeMovieFromList as removeMovieFromListAction } from '../actions';
 import MovieCard from '../components/MovieCard';
+import { useConfirmationModal } from '../components/ConfirmationModalContext';
 
 function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromList }) {
+  const modalContext = useConfirmationModal();
+
+  const removeFromList = async (item) => {
+    const result = await modalContext.showConfirmation({
+      title: `Removing movie: ${item.title}`,
+      variant: 'danger',
+    });
+    if (result) removeMovieFromList(listId, item);
+  };
+
   if (!auth.uid) return <Redirect to="/signin" />;
 
   if (requesting === false) {
@@ -32,7 +43,7 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
                   releaseDate={releaseDate}
                   baseUrl={baseUrl}
                   key={id}
-                  remove={() => removeMovieFromList(listId, item)}
+                  remove={() => removeFromList(item)}
                 />
               );
             })

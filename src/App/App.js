@@ -55,14 +55,14 @@ function App({ config, setConfig }) {
           <Route exact path={['/movie/:id', '/movie/:id/:pageNum']}>
             <Movie />
           </Route>
-          <Route exact path="/lists">
-            <ConfirmationModalContextProvider>
+          <ConfirmationModalContextProvider>
+            <Route exact path="/lists">
               <Lists />
-            </ConfirmationModalContextProvider>
-          </Route>
-          <Route exact path="/lists/:id">
-            <List />
-          </Route>
+            </Route>
+            <Route exact path="/lists/:id">
+              <List />
+            </Route>
+          </ConfirmationModalContextProvider>
           <Route exact path="/signin">
             <SignIn />
           </Route>
