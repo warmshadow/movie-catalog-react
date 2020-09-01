@@ -15,24 +15,25 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
       // redirect if list doesn't belong to current user
       if (mediaList.userId !== auth.uid) return <Redirect to="/notfound" />;
 
+      // order - new items first
+      const listItems = [...mediaList.items].reverse();
+
       return (
         <div>
           <h2 className="mt-3 mb-5">{mediaList.name}</h2>
-          {mediaList.items.length !== 0 ? (
-            mediaList.items.map((item) => {
+          {listItems.length !== 0 ? (
+            listItems.map((item) => {
               const { id, posterPath, title, releaseDate } = item;
               return (
-                <>
-                  <MovieCard
-                    id={id}
-                    posterPath={posterPath}
-                    title={title}
-                    releaseDate={releaseDate}
-                    baseUrl={baseUrl}
-                    key={id}
-                    remove={() => removeMovieFromList(listId, item)}
-                  />
-                </>
+                <MovieCard
+                  id={id}
+                  posterPath={posterPath}
+                  title={title}
+                  releaseDate={releaseDate}
+                  baseUrl={baseUrl}
+                  key={id}
+                  remove={() => removeMovieFromList(listId, item)}
+                />
               );
             })
           ) : (
