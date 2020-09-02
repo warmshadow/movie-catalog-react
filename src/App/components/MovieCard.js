@@ -33,7 +33,17 @@ const Options = ({ remove, add }) => {
   );
 };
 
-function MovieCard({ id, posterPath, title, releaseDate, score, baseUrl, remove, add }) {
+function MovieCard({
+  id,
+  posterPath,
+  title,
+  releaseDate,
+  voteAverage,
+  score,
+  baseUrl,
+  remove,
+  add,
+}) {
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">
       <Row noGutters style={{ width: '100%' }}>
@@ -44,7 +54,10 @@ function MovieCard({ id, posterPath, title, releaseDate, score, baseUrl, remove,
         <Col md={10} className="d-flex align-items-center">
           <Card.Body>
             <Card.Title>{title}</Card.Title>
-            <Card.Subtitle>{releaseDate}</Card.Subtitle>
+            <Card.Subtitle style={{ lineHeight: 3 }}>{releaseDate}</Card.Subtitle>
+            <Card.Subtitle style={{ fontWeight: 'bold', lineHeight: 3 }}>
+              {voteAverage}
+            </Card.Subtitle>
             {score && <Rating score={score} />}
           </Card.Body>
           <Options remove={remove} add={add} />

@@ -9,13 +9,20 @@ function MovieList({ movies, baseUrl, basePath, addToList }) {
   return movies.results.length ? (
     <>
       {movies.results.map((movie) => {
-        const { id, poster_path: posterPath, title, release_date: releaseDate } = movie;
+        const {
+          id,
+          poster_path: posterPath,
+          title,
+          release_date: releaseDate,
+          vote_average: voteAverage,
+        } = movie;
         return (
           <MovieCard
             id={id}
             posterPath={posterPath}
             title={title}
             releaseDate={releaseDate}
+            voteAverage={voteAverage}
             baseUrl={baseUrl}
             key={id}
             add={() => addToList(movie)}

@@ -76,7 +76,13 @@ const deleteMediaList = (list) => async (dispatch, getState, { getFirestore }) =
 };
 
 const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirestore }) => {
-  const { id, poster_path: posterPath, release_date: releaseDate, title } = movie;
+  const {
+    id,
+    poster_path: posterPath,
+    release_date: releaseDate,
+    title,
+    vote_average: voteAverage,
+  } = movie;
   try {
     const firestore = getFirestore();
     await firestore
@@ -88,6 +94,7 @@ const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirest
           posterPath,
           releaseDate,
           title,
+          voteAverage,
         }),
       });
     dispatch({ type: 'ADD_MOVIE_SUCCESS' });

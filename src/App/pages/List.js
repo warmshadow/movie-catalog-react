@@ -34,13 +34,14 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
           <h2 className="mt-3 mb-5">{mediaList.name}</h2>
           {listItems.length !== 0 ? (
             listItems.map((item) => {
-              const { id, posterPath, title, releaseDate } = item;
+              const { id, posterPath, title, releaseDate, voteAverage } = item;
               return (
                 <MovieCard
                   id={id}
                   posterPath={posterPath}
                   title={title}
                   releaseDate={releaseDate}
+                  voteAverage={voteAverage}
                   score={3.5}
                   baseUrl={baseUrl}
                   key={id}
