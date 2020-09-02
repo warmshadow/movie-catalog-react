@@ -12,8 +12,8 @@ function Rating({ score }) {
           position: 'relative',
           zIndex: 100,
         }}
-        emptySymbol={<FontAwesomeIcon icon={farStar} size="lg" />}
-        fullSymbol={<FontAwesomeIcon icon={fasStar} size="lg" />}
+        emptySymbol={<FontAwesomeIcon icon={farStar} />}
+        fullSymbol={<FontAwesomeIcon icon={fasStar} />}
         initialRating={score}
         onClick={(newScore) => console.log(newScore)}
         fractions={2}
