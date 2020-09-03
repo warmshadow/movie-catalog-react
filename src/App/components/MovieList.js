@@ -34,7 +34,10 @@ function MovieList({ movies, baseUrl, basePath, addToList, userRatings, setRatin
             baseUrl={baseUrl}
             key={id}
             add={() => addToList(movie)}
-            setRating={setRating}
+            setRating={
+              (newRating) => setRating(id, newRating, posterPath, title, releaseDate, voteAverage)
+              // eslint-disable-next-line react/jsx-curly-newline
+            }
           />
         );
       })}

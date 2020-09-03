@@ -5,8 +5,9 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieCard from '../components/MovieCard';
+import { setRating as setRatingAction } from '../actions';
 
-function Ratings({ auth, ratingsList, requesting, baseUrl }) {
+function Ratings({ auth, ratingsList, requesting, baseUrl, userRatings, setRating }) {
   if (!auth.uid) return <Redirect to="/signin" />;
 
   if (requesting === false) {
@@ -23,6 +24,7 @@ function Ratings({ auth, ratingsList, requesting, baseUrl }) {
           {listItems.length !== 0 ? (
             listItems.map((item) => {
               const { id, posterPath, title, releaseDate, voteAverage } = item;
+              const rating = userRatings && userRatings.items[id];
               return (
                 <MovieCard
                   id={id}
@@ -30,9 +32,14 @@ function Ratings({ auth, ratingsList, requesting, baseUrl }) {
                   title={title}
                   releaseDate={releaseDate}
                   voteAverage={voteAverage}
-                  score={3.5}
+                  rating={rating && rating}
                   baseUrl={baseUrl}
                   key={id}
+                  setRating={
+                    (newRating) =>
+                      setRating(id, newRating, posterPath, title, releaseDate, voteAverage)
+                    // eslint-disable-next-line react/jsx-curly-newline
+                  }
                 />
               );
             })
@@ -50,21 +57,28 @@ function Ratings({ auth, ratingsList, requesting, baseUrl }) {
 
 const mapStateToProps = (state, ownProps) => {
   const { id } = ownProps.match.params;
+  const { auth } = state.firebase;
   const { firestore } = state;
-  const { ratingsLists } = firestore.data;
+  const { ratingsLists, usersRatings } = firestore.data;
   const ratingsList = ratingsLists ? ratingsLists[id] : null;
   const requesting = firestore.status.requesting.ratingsLists;
+  const userRatings = usersRatings ? usersRatings[auth.uid] : null;
 
   return {
     auth: state.firebase.auth,
     ratingsList,
     requesting,
     baseUrl: state.config.images.secure_base_url,
+    userRatings,
   };
+};
+
+const mapDispatchToProps = {
+  setRating: setRatingAction,
 };
 
 export default compose(
   withRouter,
-  connect(mapStateToProps),
-  firestoreConnect([{ collection: 'ratingsLists' }])
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect(['ratingsLists', 'usersRatings'])
 )(Ratings);

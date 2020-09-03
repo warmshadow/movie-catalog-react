@@ -59,7 +59,7 @@ function MovieCard({
             <Card.Subtitle style={{ fontWeight: 'bold', lineHeight: 3 }}>
               {voteAverage}
             </Card.Subtitle>
-            <Rating rating={rating || 0} id={id} setRating={setRating} />
+            <Rating rating={rating || 0} setRating={setRating} />
           </Card.Body>
           <Options remove={remove} add={add} />
         </Col>

@@ -118,7 +118,11 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   }
 };
 
-const setRating = (id, rating) => async (dispatch, getState, { getFirestore }) => {
+const setRating = (id, rating, posterPath, title, releaseDate, voteAverage) => async (
+  dispatch,
+  getState,
+  { getFirestore }
+) => {
   try {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
@@ -126,6 +130,18 @@ const setRating = (id, rating) => async (dispatch, getState, { getFirestore }) =
       .collection('usersRatings')
       .doc(uid)
       .update({ [`items.${id}`]: rating });
+    await firestore
+      .collection('ratingsLists')
+      .doc(uid)
+      .update({
+        items: firestore.FieldValue.arrayUnion({
+          id,
+          posterPath,
+          releaseDate,
+          title,
+          voteAverage,
+        }),
+      });
     dispatch({ type: 'SET_RATING_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_RATING_ERROR', payload: err });
