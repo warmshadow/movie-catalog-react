@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import { useSelector } from 'react-redux';
 import Rating from './Rating';
 
 const Options = ({ remove, add }) => {
@@ -45,6 +46,7 @@ function MovieCard({
   add,
   setRating,
 }) {
+  const { auth } = useSelector((state) => state.firebase);
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">
       <Row noGutters style={{ width: '100%' }}>
@@ -59,7 +61,7 @@ function MovieCard({
             <Card.Subtitle style={{ fontWeight: 'bold', lineHeight: 3 }}>
               {voteAverage}
             </Card.Subtitle>
-            <Rating rating={rating || 0} setRating={setRating} />
+            {auth.uid && <Rating rating={rating || 0} setRating={setRating} />}
           </Card.Body>
           <Options remove={remove} add={add} />
         </Col>
