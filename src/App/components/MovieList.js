@@ -7,19 +7,32 @@ import PageLinks from './PageLinks';
 import MovieCard from './MovieCard';
 import { setRating as setRatingAction } from '../actions';
 
-function MovieList({ movies, baseUrl, basePath, addToList, userRatings, setRating }) {
+// eslint-disable-next-line camelcase
+const keysToCamel = ({ poster_path, release_date, vote_average, ...object }) => ({
+  posterPath: poster_path,
+  releaseDate: release_date,
+  voteAverage: vote_average,
+  ...object,
+});
+
+function MovieList({
+  movies,
+  baseUrl,
+  basePath,
+  addToList,
+  removeFromList,
+  userRatings,
+  setRating,
+}) {
   if (movies.isPending) return <Spinner animation="border" />;
 
-  return movies.results.length ? (
+  const listItems = movies.results || movies.items;
+
+  return listItems.length ? (
     <>
-      {movies.results.map((movie) => {
-        const {
-          id,
-          poster_path: posterPath,
-          title,
-          release_date: releaseDate,
-          vote_average: voteAverage,
-        } = movie;
+      {listItems.map((movie) => {
+        const item = movies.results ? keysToCamel(movie) : movie;
+        const { id, posterPath, title, releaseDate, voteAverage } = item;
 
         const rating = userRatings && userRatings.items[id];
 
@@ -33,7 +46,8 @@ function MovieList({ movies, baseUrl, basePath, addToList, userRatings, setRatin
             rating={rating && rating}
             baseUrl={baseUrl}
             key={id}
-            add={() => addToList(movie)}
+            add={addToList ? () => addToList(movie) : null}
+            remove={removeFromList ? () => removeFromList(movie) : null}
             setRating={
               (newRating) => setRating(id, newRating, posterPath, title, releaseDate, voteAverage)
               // eslint-disable-next-line react/jsx-curly-newline
@@ -41,7 +55,12 @@ function MovieList({ movies, baseUrl, basePath, addToList, userRatings, setRatin
           />
         );
       })}
-      <PageLinks page={movies.page} totalPages={movies.total_pages} basePath={basePath} />
+      {
+        // render if it's movies from api (with results property)
+        movies.results && (
+          <PageLinks page={movies.page} totalPages={movies.total_pages} basePath={basePath} />
+        )
+      }
     </>
   ) : (
     <h2>No Items found</h2>
