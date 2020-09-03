@@ -39,7 +39,7 @@ function NavigationBar({ auth, profile, signOut }) {
       <Navbar.Toggle onClick={() => (expanded ? handleCollapse() : setExpanded('expanded'))} />
       <Navbar.Collapse>
         {auth.uid ? (
-          <SignedInLinks signOut={signOut} handleCollapse={handleCollapse} />
+          <SignedInLinks uid={auth.uid} signOut={signOut} handleCollapse={handleCollapse} />
         ) : (
           <SignedOutLinks handleCollapse={handleCollapse} />
         )}
