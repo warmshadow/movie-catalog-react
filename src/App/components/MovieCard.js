@@ -29,7 +29,8 @@ const Options = ({ remove, add }) => {
         zIndex: 100,
       }}
     >
-      {remove ? <RemoveButton /> : <AddButton />}
+      {add && <AddButton />}
+      {remove && <RemoveButton />}
     </Card.Body>
   );
 };
