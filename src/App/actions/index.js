@@ -118,6 +118,20 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   }
 };
 
+const setRating = (id, rating) => async (dispatch, getState, { getFirestore }) => {
+  try {
+    const firestore = getFirestore();
+    const { uid } = getState().firebase.auth;
+    await firestore
+      .collection('usersRatings')
+      .doc(uid)
+      .update({ [`items.${id}`]: rating });
+    dispatch({ type: 'SET_RATING_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'SET_RATING_ERROR', payload: err });
+  }
+};
+
 export {
   setConfig,
   setMoviesCategory,
@@ -128,4 +142,5 @@ export {
   deleteMediaList,
   addMovieToList,
   removeMovieFromList,
+  setRating,
 };
