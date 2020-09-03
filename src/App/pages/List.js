@@ -4,11 +4,23 @@ import { connect } from 'react-redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
-import { removeMovieFromList as removeMovieFromListAction } from '../actions';
 import MovieCard from '../components/MovieCard';
+import {
+  removeMovieFromList as removeMovieFromListAction,
+  setRating as setRatingAction,
+} from '../actions';
 import { useConfirmationModal } from '../components/ConfirmationModalContext';
 
-function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromList }) {
+function List({
+  auth,
+  mediaList,
+  requesting,
+  baseUrl,
+  listId,
+  removeMovieFromList,
+  userRatings,
+  setRating,
+}) {
   const modalContext = useConfirmationModal();
 
   const removeFromList = async (item) => {
@@ -35,6 +47,7 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
           {listItems.length !== 0 ? (
             listItems.map((item) => {
               const { id, posterPath, title, releaseDate, voteAverage } = item;
+              const rating = userRatings && userRatings.items[id];
               return (
                 <MovieCard
                   id={id}
@@ -42,10 +55,11 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
                   title={title}
                   releaseDate={releaseDate}
                   voteAverage={voteAverage}
-                  score={3.5}
+                  rating={rating && rating}
                   baseUrl={baseUrl}
                   key={id}
                   remove={() => removeFromList(item)}
+                  setRating={setRating}
                 />
               );
             })
@@ -63,10 +77,12 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
 
 const mapStateToProps = (state, ownProps) => {
   const { id } = ownProps.match.params;
+  const { auth } = state.firebase;
   const { firestore } = state;
-  const { mediaLists } = firestore.data;
+  const { mediaLists, usersRatings } = firestore.data;
   const mediaList = mediaLists ? mediaLists[id] : null;
   const requesting = firestore.status.requesting.mediaLists;
+  const userRatings = usersRatings ? usersRatings[auth.uid] : null;
 
   return {
     auth: state.firebase.auth,
@@ -74,15 +90,17 @@ const mapStateToProps = (state, ownProps) => {
     requesting,
     baseUrl: state.config.images.secure_base_url,
     listId: id,
+    userRatings,
   };
 };
 
 const mapDispatchToProps = {
   removeMovieFromList: removeMovieFromListAction,
+  setRating: setRatingAction,
 };
 
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'mediaLists' }])
+  firestoreConnect(['mediaLists', 'usersRatings'])
 )(List);

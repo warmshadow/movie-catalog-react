@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as fasStar } from '@fortawesome/free-solid-svg-icons';
 
-function Rating({ score }) {
+function Rating({ rating, id, setRating }) {
   return (
     <>
       <RatingSymbols
@@ -14,8 +14,8 @@ function Rating({ score }) {
         }}
         emptySymbol={<FontAwesomeIcon icon={farStar} />}
         fullSymbol={<FontAwesomeIcon icon={fasStar} />}
-        initialRating={score}
-        onClick={(newScore) => console.log(newScore)}
+        initialRating={rating}
+        onClick={(newRating) => setRating(id, newRating)}
         fractions={2}
       />
     </>

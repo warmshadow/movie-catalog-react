@@ -39,10 +39,11 @@ function MovieCard({
   title,
   releaseDate,
   voteAverage,
-  score,
+  rating,
   baseUrl,
   remove,
   add,
+  setRating,
 }) {
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">
@@ -58,7 +59,7 @@ function MovieCard({
             <Card.Subtitle style={{ fontWeight: 'bold', lineHeight: 3 }}>
               {voteAverage}
             </Card.Subtitle>
-            {score && <Rating score={score} />}
+            <Rating rating={rating || 0} id={id} setRating={setRating} />
           </Card.Body>
           <Options remove={remove} add={add} />
         </Col>
