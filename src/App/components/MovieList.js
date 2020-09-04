@@ -50,10 +50,11 @@ function MovieList({
             add={addToList ? () => addToList(movie) : null}
             remove={removeFromList ? () => removeFromList(movie) : null}
             setRating={
-              (newRating) => setRating(newRating, id, posterPath, title, releaseDate, voteAverage)
+              (newRating) =>
+                setRating(newRating, { id, posterPath, title, releaseDate, voteAverage })
               // eslint-disable-next-line react/jsx-curly-newline
             }
-            removeRating={() => removeRating(id, posterPath, title, releaseDate, voteAverage)}
+            removeRating={() => removeRating({ id, posterPath, title, releaseDate, voteAverage })}
           />
         );
       })}

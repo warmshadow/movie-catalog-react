@@ -118,11 +118,8 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   }
 };
 
-const setRating = (rating, id, posterPath, title, releaseDate, voteAverage) => async (
-  dispatch,
-  getState,
-  { getFirestore }
-) => {
+const setRating = (rating, item) => async (dispatch, getState, { getFirestore }) => {
+  const { id, posterPath, title, releaseDate, voteAverage } = item;
   try {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
@@ -148,11 +145,8 @@ const setRating = (rating, id, posterPath, title, releaseDate, voteAverage) => a
   }
 };
 
-const removeRating = (id, posterPath, title, releaseDate, voteAverage) => async (
-  dispatch,
-  getState,
-  { getFirestore }
-) => {
+const removeRating = (item) => async (dispatch, getState, { getFirestore }) => {
+  const { id, posterPath, title, releaseDate, voteAverage } = item;
   try {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
