@@ -118,7 +118,7 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   }
 };
 
-const setRating = (id, rating, posterPath, title, releaseDate, voteAverage) => async (
+const setRating = (rating, id, posterPath, title, releaseDate, voteAverage) => async (
   dispatch,
   getState,
   { getFirestore }
@@ -148,6 +148,36 @@ const setRating = (id, rating, posterPath, title, releaseDate, voteAverage) => a
   }
 };
 
+const removeRating = (id, posterPath, title, releaseDate, voteAverage) => async (
+  dispatch,
+  getState,
+  { getFirestore }
+) => {
+  try {
+    const firestore = getFirestore();
+    const { uid } = getState().firebase.auth;
+    await firestore
+      .collection('usersRatings')
+      .doc(uid)
+      .update({ [`items.${id}`]: firestore.FieldValue.delete() });
+    await firestore
+      .collection('ratingsLists')
+      .doc(uid)
+      .update({
+        items: firestore.FieldValue.arrayRemove({
+          id,
+          posterPath,
+          releaseDate,
+          title,
+          voteAverage,
+        }),
+      });
+    dispatch({ type: 'REMOVE_RATING_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'REMOVE_RATING_ERROR', payload: err });
+  }
+};
+
 export {
   setConfig,
   setMoviesCategory,
@@ -159,4 +189,5 @@ export {
   addMovieToList,
   removeMovieFromList,
   setRating,
+  removeRating,
 };
