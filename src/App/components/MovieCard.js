@@ -47,6 +47,7 @@ function MovieCard({
   remove,
   add,
   setRating,
+  removeRating,
 }) {
   const { auth } = useSelector((state) => state.firebase);
 
@@ -71,7 +72,12 @@ function MovieCard({
             </Card.Subtitle>
             {auth.uid &&
               (rating ? (
-                <Rating rating={rating} setRating={setRating} removable />
+                <Rating
+                  rating={rating}
+                  setRating={setRating}
+                  removable
+                  removeRating={removeRating}
+                />
               ) : (
                 <div>
                   <Button

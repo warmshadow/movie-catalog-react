@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 import { faStar as fasStar, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-function Rating({ rating, setRating, removable }) {
+function Rating({ rating, setRating, removable, removeRating }) {
   const [showRemove, setShowRemove] = useState(false);
 
   return (
@@ -33,7 +33,7 @@ function Rating({ rating, setRating, removable }) {
           cursor: 'pointer',
         }}
       >
-        <FontAwesomeIcon icon={faTimes} onClick={() => console.log('removed rating')} />
+        <FontAwesomeIcon icon={faTimes} onClick={removeRating} />
       </span>
     </div>
   );

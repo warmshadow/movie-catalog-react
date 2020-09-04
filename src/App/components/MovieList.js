@@ -5,7 +5,7 @@ import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import PageLinks from './PageLinks';
 import MovieCard from './MovieCard';
-import { setRating as setRatingAction } from '../actions';
+import { setRating as setRatingAction, removeRating as removeRatingAction } from '../actions';
 
 // eslint-disable-next-line camelcase
 const keysToCamel = ({ poster_path, release_date, vote_average, ...object }) => ({
@@ -23,6 +23,7 @@ function MovieList({
   removeFromList,
   userRatings,
   setRating,
+  removeRating,
 }) {
   if (movies.isPending) return <Spinner animation="border" />;
 
@@ -49,9 +50,10 @@ function MovieList({
             add={addToList ? () => addToList(movie) : null}
             remove={removeFromList ? () => removeFromList(movie) : null}
             setRating={
-              (newRating) => setRating(id, newRating, posterPath, title, releaseDate, voteAverage)
+              (newRating) => setRating(newRating, id, posterPath, title, releaseDate, voteAverage)
               // eslint-disable-next-line react/jsx-curly-newline
             }
+            removeRating={() => removeRating(id, posterPath, title, releaseDate, voteAverage)}
           />
         );
       })}
@@ -80,6 +82,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setRating: setRatingAction,
+  removeRating: removeRatingAction,
 };
 
 export default compose(
