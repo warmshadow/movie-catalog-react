@@ -71,7 +71,7 @@ function MovieCard({
             </Card.Subtitle>
             {auth.uid &&
               (rating ? (
-                <Rating rating={rating} setRating={setRating} />
+                <Rating rating={rating} setRating={setRating} removable />
               ) : (
                 <div>
                   <Button
