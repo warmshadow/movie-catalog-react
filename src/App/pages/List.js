@@ -14,6 +14,7 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
   const removeFromList = async (item) => {
     const result = await modalContext.showConfirmation({
       title: `Removing movie: ${item.title}`,
+      content: 'Are you sure?',
       variant: 'danger',
     });
     if (result) removeMovieFromList(listId, item);

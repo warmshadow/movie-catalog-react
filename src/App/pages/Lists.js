@@ -37,6 +37,7 @@ function Lists({ auth, mediaLists, createMediaList, deleteMediaList, requestingO
   const createList = async (list) => {
     const result = await modalContext.showConfirmation({
       title: `Creating list: ${list.name}`,
+      content: 'Are you sure?',
       variant: 'primary',
     });
     if (result) createMediaList(list);
@@ -45,6 +46,7 @@ function Lists({ auth, mediaLists, createMediaList, deleteMediaList, requestingO
   const deleteList = async (list) => {
     const result = await modalContext.showConfirmation({
       title: `Deleting list: ${list.name}`,
+      content: 'Are you sure?',
       variant: 'danger',
     });
     if (result) deleteMediaList(list);

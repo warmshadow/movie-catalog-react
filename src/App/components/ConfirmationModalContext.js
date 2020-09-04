@@ -43,7 +43,7 @@ export const ConfirmationModalContextProvider = ({ children }) => {
         </Modal.Header>
 
         <Modal.Body>
-          <p>Are you sure?</p>
+          <p style={{ whiteSpace: 'pre-wrap' }}>{options && options.content}</p>
         </Modal.Body>
 
         <Modal.Footer>

@@ -13,6 +13,7 @@ function Ratings({ auth, ratingsList, requesting, baseUrl, removeRating }) {
   const removeFromList = async (item) => {
     const result = await modalContext.showConfirmation({
       title: `Removing movie: ${item.title}`,
+      content: `This will also remove your rating for this movie.\nAre you sure?`,
       variant: 'danger',
     });
     if (result) {
