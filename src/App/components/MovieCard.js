@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useSelector } from 'react-redux';
 import Rating from './Rating';
+import RatingPopover from './RatingPopover';
 
 const Options = ({ remove, add }) => {
   const RemoveButton = () => (
@@ -48,6 +49,12 @@ function MovieCard({
   setRating,
 }) {
   const { auth } = useSelector((state) => state.firebase);
+
+  const [show, setShow] = useState(false);
+  const target = useRef(null);
+
+  useEffect(() => setShow(false), [rating]);
+
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">
       <Row noGutters style={{ width: '100%' }}>
@@ -62,7 +69,28 @@ function MovieCard({
             <Card.Subtitle style={{ fontWeight: 'bold', lineHeight: 3 }}>
               {voteAverage}
             </Card.Subtitle>
-            {auth.uid && <Rating rating={rating || 0} setRating={setRating} />}
+            {auth.uid &&
+              (rating ? (
+                <Rating rating={rating} setRating={setRating} />
+              ) : (
+                <div>
+                  <Button
+                    ref={target}
+                    size="sm"
+                    style={{ position: 'relative', zIndex: 100 }}
+                    onClick={() => setShow(!show)}
+                  >
+                    Rate it
+                  </Button>
+                  <RatingPopover
+                    target={target}
+                    show={show}
+                    setShow={setShow}
+                    placement="bottom"
+                    setRating={setRating}
+                  />
+                </div>
+              ))}
           </Card.Body>
           <Options remove={remove} add={add} />
         </Col>
