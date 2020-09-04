@@ -5,8 +5,21 @@ import { firestoreConnect } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
+import { removeRating as removeRatingAction } from '../actions';
+import { useConfirmationModal } from '../components/ConfirmationModalContext';
 
-function Ratings({ auth, ratingsList, requesting, baseUrl }) {
+function Ratings({ auth, ratingsList, requesting, baseUrl, removeRating }) {
+  const modalContext = useConfirmationModal();
+  const removeFromList = async (item) => {
+    const result = await modalContext.showConfirmation({
+      title: `Removing movie: ${item.title}`,
+      variant: 'danger',
+    });
+    if (result) {
+      removeRating(item);
+    }
+  };
+
   if (!auth.uid) return <Redirect to="/signin" />;
 
   if (requesting === false) {
@@ -21,7 +34,11 @@ function Ratings({ auth, ratingsList, requesting, baseUrl }) {
       return (
         <div>
           <h2 className="mt-3 mb-5">Your ratings</h2>
-          <MovieList movies={orderedRatingsList} baseUrl={baseUrl} />
+          <MovieList
+            movies={orderedRatingsList}
+            baseUrl={baseUrl}
+            removeFromList={removeFromList}
+          />
         </div>
       );
     }
@@ -46,8 +63,12 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
+const mapDispatchToProps = {
+  removeRating: removeRatingAction,
+};
+
 export default compose(
   withRouter,
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect(['ratingsLists', 'usersRatings'])
 )(Ratings);

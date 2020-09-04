@@ -67,7 +67,9 @@ function App({ config, setConfig }) {
             </ConfirmationModalContextProvider>
           </Route>
           <Route exact path="/ratings/:id">
-            <Ratings />
+            <ConfirmationModalContextProvider>
+              <Ratings />
+            </ConfirmationModalContextProvider>
           </Route>
           <Route exact path="/signin">
             <SignIn />
