@@ -24,6 +24,7 @@ function MovieList({
   userRatings,
   setRating,
   removeRating,
+  addToWatchlist,
 }) {
   if (movies.isPending) return <Spinner animation="border" />;
 
@@ -49,6 +50,7 @@ function MovieList({
             key={id}
             add={addToList ? () => addToList(movie) : null}
             remove={removeFromList ? () => removeFromList(movie) : null}
+            addToWatchlist={addToWatchlist ? () => addToWatchlist(movie) : null}
             setRating={
               (newRating) =>
                 setRating(newRating, { id, posterPath, title, releaseDate, voteAverage })
