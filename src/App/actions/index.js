@@ -118,6 +118,51 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   }
 };
 
+const addMovieToWatchlist = (movie) => async (dispatch, getState, { getFirestore }) => {
+  const {
+    id,
+    poster_path: posterPath,
+    release_date: releaseDate,
+    title,
+    vote_average: voteAverage,
+  } = movie;
+  const { uid } = getState().firebase.auth;
+  try {
+    const firestore = getFirestore();
+    await firestore
+      .collection('watchlists')
+      .doc(uid)
+      .update({
+        items: firestore.FieldValue.arrayUnion({
+          id,
+          posterPath,
+          releaseDate,
+          title,
+          voteAverage,
+        }),
+      });
+    dispatch({ type: 'ADD_MOVIE_WATCHLIST_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'ADD_MOVIE_WATCHLIST_ERROR' });
+  }
+};
+
+const removeMovieFromWatchlist = (movie) => async (dispatch, getState, { getFirestore }) => {
+  try {
+    const firestore = getFirestore();
+    const { uid } = getState().firebase.auth;
+    await firestore
+      .collection('watchlists')
+      .doc(uid)
+      .update({
+        items: firestore.FieldValue.arrayRemove(movie),
+      });
+    dispatch({ type: 'REMOVE_MOVIE_WATCHLIST_SUCCESS' });
+  } catch (err) {
+    dispatch({ type: 'REMOVE_MOVIE_WATCHLIST_ERROR', payload: err });
+  }
+};
+
 const setRating = (rating, item) => async (dispatch, getState, { getFirestore }) => {
   const { id, posterPath, title, releaseDate, voteAverage } = item;
   try {
@@ -182,6 +227,8 @@ export {
   deleteMediaList,
   addMovieToList,
   removeMovieFromList,
+  addMovieToWatchlist,
+  removeMovieFromWatchlist,
   setRating,
   removeRating,
 };

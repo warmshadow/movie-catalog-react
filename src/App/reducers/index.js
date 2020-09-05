@@ -7,6 +7,7 @@ import moviesReducer from './moviesReducer';
 import movieReducer from './movieReducer';
 import mediaListsReducer from './mediaListsReducer';
 import ratingsReducer from './ratingsReducer';
+import watchlistReducer from './watchlistReducer';
 
 export default combineReducers({
   auth: authReducer,
@@ -15,6 +16,7 @@ export default combineReducers({
   movie: movieReducer,
   mediaLists: mediaListsReducer,
   ratings: ratingsReducer,
+  watchlist: watchlistReducer,
   firestore: firestoreReducer,
   firebase: firebaseReducer,
 });
