@@ -16,7 +16,7 @@ const Options = ({ remove, add, addToWatchlist }) => {
   );
 
   const AddButton = () => (
-    <Button style={{ marginBottom: '1rem' }} size="sm" variant="outline-dark" onClick={add}>
+    <Button block style={{ marginBottom: '1rem' }} size="sm" variant="outline-dark" onClick={add}>
       Add To List
     </Button>
   );
