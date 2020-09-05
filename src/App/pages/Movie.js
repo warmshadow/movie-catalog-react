@@ -50,6 +50,7 @@ function Movie({
         baseUrl={baseUrl}
         imdbBaseUrl={imdbBaseUrl}
         addToList={handleAdd}
+        addToWatchlist={addMovieToWatchlist}
       />
       <h3 className="mt-5 mb-5">Similar movies:</h3>
       <MovieList

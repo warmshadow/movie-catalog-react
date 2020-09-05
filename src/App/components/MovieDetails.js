@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
-function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList }) {
+function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addToWatchlist }) {
   const {
     poster_path: posterPath,
     title,
@@ -66,8 +66,15 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList }) {
               )}
             </Card.Body>
             <Card.Footer>
-              <Button variant="outline-dark" onClick={() => addToList(movie)}>
+              <Button
+                style={{ marginRight: '1rem' }}
+                variant="outline-dark"
+                onClick={() => addToList(movie)}
+              >
                 Add to List
+              </Button>
+              <Button variant="outline-dark" onClick={() => addToWatchlist(movie)}>
+                Add to Watchlist
               </Button>
             </Card.Footer>
           </Card>
