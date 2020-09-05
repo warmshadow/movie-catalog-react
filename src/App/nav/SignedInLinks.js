@@ -12,6 +12,9 @@ function SignedInLinks({ handleCollapse, uid, signOut }) {
       <NavLink to={`/ratings/${uid}`} onClick={handleCollapse}>
         <Button className="nav-link">My Ratings</Button>
       </NavLink>
+      <NavLink to={`/watchlist/${uid}`} onClick={handleCollapse}>
+        <Button className="nav-link">My Watchlist</Button>
+      </NavLink>
       <Button
         className="nav-link"
         onClick={() => {

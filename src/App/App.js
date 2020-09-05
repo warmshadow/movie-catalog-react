@@ -17,6 +17,7 @@ import NotFound from './pages/NotFound';
 import './App.css';
 import { ConfirmationModalContextProvider } from './components/ConfirmationModalContext';
 import Ratings from './pages/Ratings';
+import Watchlist from './pages/Watchlist';
 
 function App({ config, setConfig }) {
   useEffect(() => {
@@ -69,6 +70,11 @@ function App({ config, setConfig }) {
           <Route exact path="/ratings/:id">
             <ConfirmationModalContextProvider>
               <Ratings />
+            </ConfirmationModalContextProvider>
+          </Route>
+          <Route exact path="/watchlist/:id">
+            <ConfirmationModalContextProvider>
+              <Watchlist />
             </ConfirmationModalContextProvider>
           </Route>
           <Route exact path="/signin">
