@@ -8,30 +8,38 @@ import { useSelector } from 'react-redux';
 import Rating from './Rating';
 import RatingPopover from './RatingPopover';
 
-const Options = ({ remove, add }) => {
+const Options = ({ remove, add, addToWatchlist }) => {
   const RemoveButton = () => (
-    <Button variant="outline-dark" onClick={remove}>
+    <Button size="sm" variant="outline-dark" onClick={remove}>
       Remove
     </Button>
   );
 
   const AddButton = () => (
-    <Button variant="outline-dark" onClick={add}>
+    <Button style={{ marginBottom: '1rem' }} size="sm" variant="outline-dark" onClick={add}>
       Add To List
+    </Button>
+  );
+
+  const AddToWatchlistButton = () => (
+    <Button size="sm" variant="outline-dark" onClick={addToWatchlist}>
+      Add To Watchlist
     </Button>
   );
 
   return (
     <Card.Body
-      className="d-flex align-items-center justify-content-center"
+      className="d-flex flex-column align-items-center justify-content-center"
       style={{
         position: 'absolute',
         right: 0,
         zIndex: 100,
+        height: '100%',
       }}
     >
       {add && <AddButton />}
       {remove && <RemoveButton />}
+      {addToWatchlist && <AddToWatchlistButton />}
     </Card.Body>
   );
 };
@@ -46,6 +54,7 @@ function MovieCard({
   baseUrl,
   remove,
   add,
+  addToWatchlist,
   setRating,
   removeRating,
 }) {
@@ -98,7 +107,7 @@ function MovieCard({
                 </div>
               ))}
           </Card.Body>
-          <Options remove={remove} add={add} />
+          <Options remove={remove} add={add} addToWatchlist={addToWatchlist} />
         </Col>
       </Row>
     </Card>
