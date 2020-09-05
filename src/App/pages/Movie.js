@@ -2,30 +2,20 @@ import React, { useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
-import {
-  setMovie as setMovieAction,
-  setMoviesSimilar as setMoviesSimilarAction,
-  addMovieToWatchlist as addMovieToWatchlistAction,
-} from '../actions';
+import { setMovie as setMovieAction, setMoviesSimilar as setMoviesSimilarAction } from '../actions';
 import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
 import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
 import useAddToList from '../hooks/useAddToList';
+import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
-function Movie({
-  movie,
-  setMovie,
-  baseUrl,
-  imdbBaseUrl,
-  movies,
-  setMoviesSimilar,
-  addMovieToWatchlist,
-}) {
+function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar }) {
   const { id, pageNum } = useParams();
   const basePath = `/movie/${id}`;
 
   const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
+  const addToWatchlist = useAddToWatchlist();
 
   useEffect(() => {
     setMovie(id);
@@ -50,7 +40,7 @@ function Movie({
         baseUrl={baseUrl}
         imdbBaseUrl={imdbBaseUrl}
         addToList={handleAdd}
-        addToWatchlist={addMovieToWatchlist}
+        addToWatchlist={addToWatchlist}
       />
       <h3 className="mt-5 mb-5">Similar movies:</h3>
       <MovieList
@@ -58,7 +48,7 @@ function Movie({
         baseUrl={baseUrl}
         basePath={basePath}
         addToList={handleAdd}
-        addToWatchlist={addMovieToWatchlist}
+        addToWatchlist={addToWatchlist}
       />
       <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
@@ -77,7 +67,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   setMovie: setMovieAction,
   setMoviesSimilar: setMoviesSimilarAction,
-  addMovieToWatchlist: addMovieToWatchlistAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Movie);

@@ -2,20 +2,19 @@ import React, { useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
-import {
-  setMoviesSearch as setMoviesSearchAction,
-  addMovieToWatchlist as addMovieToWatchlistAction,
-} from '../actions';
+import { setMoviesSearch as setMoviesSearchAction } from '../actions';
 import MovieList from '../components/MovieList';
 import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
 import useAddToList from '../hooks/useAddToList';
+import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
-function Search({ movies, setMoviesSearch, baseUrl, addMovieToWatchlist }) {
+function Search({ movies, setMoviesSearch, baseUrl }) {
   const { title, pageNum } = useParams();
   const basePath = `/search/${title}`;
 
   const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
+  const addToWatchlist = useAddToWatchlist();
 
   useEffect(() => {
     setMoviesSearch(title, pageNum);
@@ -34,7 +33,7 @@ function Search({ movies, setMoviesSearch, baseUrl, addMovieToWatchlist }) {
         baseUrl={baseUrl}
         basePath={basePath}
         addToList={handleAdd}
-        addToWatchlist={addMovieToWatchlist}
+        addToWatchlist={addToWatchlist}
       />
       <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
@@ -50,7 +49,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setMoviesSearch: setMoviesSearchAction,
-  addMovieToWatchlist: addMovieToWatchlistAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

@@ -2,14 +2,12 @@ import React, { useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
-import {
-  setMoviesCategory as setMoviesCategoryAction,
-  addMovieToWatchlist as addMovieToWatchlistAction,
-} from '../actions';
+import { setMoviesCategory as setMoviesCategoryAction } from '../actions';
 import MovieList from '../components/MovieList';
 import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
 import useAddToList from '../hooks/useAddToList';
+import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
 const CATEGORIES = {
   toprated: {
@@ -42,11 +40,12 @@ const CATEGORIES = {
   },
 };
 
-function Category({ movies, baseUrl, setMoviesCategory, addMovieToWatchlist }) {
+function Category({ movies, baseUrl, setMoviesCategory }) {
   const { title, pageNum } = useParams();
   const basePath = `/category/${title}`;
 
   const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
+  const addToWatchlist = useAddToWatchlist();
 
   useEffect(() => {
     if (CATEGORIES[title]) {
@@ -69,7 +68,7 @@ function Category({ movies, baseUrl, setMoviesCategory, addMovieToWatchlist }) {
         baseUrl={baseUrl}
         basePath={basePath}
         addToList={handleAdd}
-        addToWatchlist={addMovieToWatchlist}
+        addToWatchlist={addToWatchlist}
       />
       <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
@@ -85,7 +84,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setMoviesCategory: setMoviesCategoryAction,
-  addMovieToWatchlist: addMovieToWatchlistAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Category);
