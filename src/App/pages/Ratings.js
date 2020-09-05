@@ -34,7 +34,7 @@ function Ratings({ auth, ratingsList, requesting, baseUrl, removeRating }) {
 
       return (
         <div>
-          <h2 className="mt-3 mb-5">Your ratings</h2>
+          <h2 className="mt-3 mb-5">My ratings</h2>
           <MovieList
             movies={orderedRatingsList}
             baseUrl={baseUrl}
@@ -71,5 +71,5 @@ const mapDispatchToProps = {
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect(['ratingsLists', 'usersRatings'])
+  firestoreConnect(['ratingsLists'])
 )(Ratings);
