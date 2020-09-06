@@ -7,9 +7,11 @@ import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
 import { removeMovieFromList as removeMovieFromListAction } from '../actions';
 import { useConfirmationModal } from '../components/ConfirmationModalContext';
+import useFetchListMovies from '../hooks/useFetchListMovies';
 
 function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromList }) {
   const modalContext = useConfirmationModal();
+  const { fetchOnListChange, movies } = useFetchListMovies();
 
   const removeFromList = async (item) => {
     const result = await modalContext.showConfirmation({
@@ -29,14 +31,17 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
 
       // order - new items first
       const orderedItems = [...mediaList.items].reverse();
-      const orderedMediaList = { ...mediaList, items: orderedItems };
+      fetchOnListChange(orderedItems);
 
-      return (
-        <div>
-          <h2 className="mt-3 mb-5">{mediaList.name}</h2>
-          <MovieList movies={orderedMediaList} baseUrl={baseUrl} removeFromList={removeFromList} />
-        </div>
-      );
+      if (movies) {
+        return (
+          <div>
+            <h2 className="mt-3 mb-5">{mediaList.name}</h2>
+            <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+          </div>
+        );
+      }
+      return <Spinner animation="border" />;
     }
     return <Redirect to="/notfound" />;
   }

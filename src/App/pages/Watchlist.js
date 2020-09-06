@@ -7,9 +7,12 @@ import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
 import { removeMovieFromWatchlist as removeMovieFromWatchlistAction } from '../actions';
 import { useConfirmationModal } from '../components/ConfirmationModalContext';
+import useFetchListMovies from '../hooks/useFetchListMovies';
 
 function Watchlist({ auth, watchlist, requesting, baseUrl, removeMovieFromWatchlist }) {
   const modalContext = useConfirmationModal();
+  const { fetchOnListChange, movies } = useFetchListMovies();
+
   const removeFromList = async (item) => {
     const result = await modalContext.showConfirmation({
       title: `Removing movie: ${item.title}`,
@@ -30,14 +33,17 @@ function Watchlist({ auth, watchlist, requesting, baseUrl, removeMovieFromWatchl
 
       // order - new items first
       const orderedItems = [...watchlist.items].reverse();
-      const orderedWatchlist = { ...watchlist, items: orderedItems };
+      fetchOnListChange(orderedItems);
 
-      return (
-        <div>
-          <h2 className="mt-3 mb-5">My watchlist</h2>
-          <MovieList movies={orderedWatchlist} baseUrl={baseUrl} removeFromList={removeFromList} />
-        </div>
-      );
+      if (movies) {
+        return (
+          <div>
+            <h2 className="mt-3 mb-5">My watchlist</h2>
+            <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+          </div>
+        );
+      }
+      return <Spinner animation="border" />;
     }
     return <Redirect to="/notfound" />;
   }
