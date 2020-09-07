@@ -48,6 +48,20 @@ const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
   dispatch({ type: 'SET_MOVIES', payload: res.data });
 };
 
+const fetchMovie = async (movie) => {
+  const res = await tmdb.get(`/movie/${movie.id}`);
+  return res.data;
+};
+const setMoviesList = (movieIds) => async (dispatch) => {
+  dispatch({ type: 'SET_MOVIES_PENDING' });
+
+  const movies = {};
+  const fetchMovies = movieIds.map(fetchMovie);
+  movies.items = await Promise.all(fetchMovies);
+
+  dispatch({ type: 'SET_MOVIES', payload: movies });
+};
+
 const createMediaList = (list) => async (dispatch, getState, { getFirestore }) => {
   try {
     const firestore = getFirestore();
@@ -189,6 +203,7 @@ export {
   setMoviesSearch,
   setMovie,
   setMoviesSimilar,
+  setMoviesList,
   createMediaList,
   deleteMediaList,
   addMovieToList,
