@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import clsx from 'clsx';
 
-function Wrapper({ page, children }) {
+const Wrapper = ({ page, children }) => {
   const firstPage = page === 1;
   const classes = clsx('d-flex', 'mb-3', {
     'justify-content-end': firstPage,
@@ -11,15 +11,15 @@ function Wrapper({ page, children }) {
   });
 
   return <div className={classes}>{children}</div>;
-}
+};
 
-function PageLink({ path, num }) {
+const PageLink = ({ path, num }) => {
   return (
     <Link to={path}>
       <Button>{`Page ${num}`}</Button>
     </Link>
   );
-}
+};
 
 function PageLinks({ page, totalPages, basePath }) {
   const [prev, next] = [page - 1, page + 1];
