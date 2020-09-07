@@ -23,14 +23,18 @@ const setMoviesSearch = (title, pageNum) => async (dispatch) => {
 };
 
 const setMovie = (id) => async (dispatch) => {
-  dispatch({ type: 'SET_MOVIE_PENDING' });
-
   const res = await tmdb.get(`/movie/${id}`, {
     params: {
       append_to_response: 'credits',
     },
   });
   dispatch({ type: 'SET_MOVIE', payload: res.data });
+};
+
+const clearMovie = () => {
+  return {
+    type: 'SET_MOVIE_PENDING',
+  };
 };
 
 const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
@@ -200,6 +204,7 @@ export {
   setMoviesCategory,
   setMoviesSearch,
   setMovie,
+  clearMovie,
   setMoviesSimilar,
   setMoviesList,
   clearMovies,

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
 import {
   setMovie as setMovieAction,
+  clearMovie as clearMovieAction,
   setMoviesSimilar as setMoviesSimilarAction,
   clearMovies as clearMoviesAction,
 } from '../actions';
@@ -14,7 +15,16 @@ import pageIsInt from '../helpers';
 import useAddToList from '../hooks/useAddToList';
 import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
-function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar, clearMovies }) {
+function Movie({
+  movie,
+  setMovie,
+  clearMovie,
+  baseUrl,
+  imdbBaseUrl,
+  movies,
+  setMoviesSimilar,
+  clearMovies,
+}) {
   const { id, pageNum } = useParams();
   const basePath = `/movie/${id}`;
 
@@ -23,7 +33,9 @@ function Movie({ movie, setMovie, baseUrl, imdbBaseUrl, movies, setMoviesSimilar
 
   useEffect(() => {
     setMovie(id);
-  }, [id, setMovie]);
+
+    return () => clearMovie();
+  }, [id, setMovie, clearMovie]);
 
   useEffect(() => {
     setMoviesSimilar(id, pageNum);
@@ -76,6 +88,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setMovie: setMovieAction,
+  clearMovie: clearMovieAction,
   setMoviesSimilar: setMoviesSimilarAction,
   clearMovies: clearMoviesAction,
 };
