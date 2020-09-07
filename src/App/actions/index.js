@@ -1,34 +1,50 @@
 import tmdb from '../api/tmdb';
 
 const setConfig = () => async (dispatch) => {
-  const res = await tmdb.get('/configuration');
-  dispatch({ type: 'SET_CONFIG', payload: res.data });
+  try {
+    const res = await tmdb.get('/configuration');
+    dispatch({ type: 'SET_CONFIG', payload: res.data });
+  } catch (err) {
+    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+  }
 };
 
 const setMoviesCategory = (params, pageNum) => async (dispatch) => {
-  const res = await tmdb.get('/discover/movie', {
-    params: { ...params, page: pageNum },
-  });
-  dispatch({ type: 'SET_MOVIES', payload: res.data });
+  try {
+    const res = await tmdb.get('/discover/movie', {
+      params: { ...params, page: pageNum },
+    });
+    dispatch({ type: 'SET_MOVIES', payload: res.data });
+  } catch (err) {
+    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+  }
 };
 
 const setMoviesSearch = (title, pageNum) => async (dispatch) => {
-  const res = await tmdb.get('/search/movie', {
-    params: {
-      query: title,
-      page: pageNum,
-    },
-  });
-  dispatch({ type: 'SET_MOVIES', payload: res.data });
+  try {
+    const res = await tmdb.get('/search/movie', {
+      params: {
+        query: title,
+        page: pageNum,
+      },
+    });
+    dispatch({ type: 'SET_MOVIES', payload: res.data });
+  } catch (err) {
+    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+  }
 };
 
 const setMovie = (id) => async (dispatch) => {
-  const res = await tmdb.get(`/movie/${id}`, {
-    params: {
-      append_to_response: 'credits',
-    },
-  });
-  dispatch({ type: 'SET_MOVIE', payload: res.data });
+  try {
+    const res = await tmdb.get(`/movie/${id}`, {
+      params: {
+        append_to_response: 'credits',
+      },
+    });
+    dispatch({ type: 'SET_MOVIE', payload: res.data });
+  } catch (err) {
+    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+  }
 };
 
 const clearMovie = () => {
@@ -38,12 +54,16 @@ const clearMovie = () => {
 };
 
 const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
-  const res = await tmdb.get(`/movie/${id}/similar`, {
-    params: {
-      page: pageNum,
-    },
-  });
-  dispatch({ type: 'SET_MOVIES', payload: res.data });
+  try {
+    const res = await tmdb.get(`/movie/${id}/similar`, {
+      params: {
+        page: pageNum,
+      },
+    });
+    dispatch({ type: 'SET_MOVIES', payload: res.data });
+  } catch (err) {
+    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+  }
 };
 
 const fetchMovie = async (movie) => {
@@ -51,11 +71,15 @@ const fetchMovie = async (movie) => {
   return res.data;
 };
 const setMoviesList = (movieIds) => async (dispatch) => {
-  const movies = {};
-  const fetchMovies = movieIds.map(fetchMovie);
-  movies.items = await Promise.all(fetchMovies);
+  try {
+    const movies = {};
+    const fetchMovies = movieIds.map(fetchMovie);
+    movies.items = await Promise.all(fetchMovies);
 
-  dispatch({ type: 'SET_MOVIES', payload: movies });
+    dispatch({ type: 'SET_MOVIES', payload: movies });
+  } catch (err) {
+    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+  }
 };
 
 const clearMovies = () => {
@@ -76,7 +100,7 @@ const createMediaList = (list) => async (dispatch, getState, { getFirestore }) =
     });
     dispatch({ type: 'CREATE_MEDIA_LIST_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'CREATE_MEDIA_LIST_ERROR' });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
@@ -87,7 +111,7 @@ const deleteMediaList = (list) => async (dispatch, getState, { getFirestore }) =
 
     dispatch({ type: 'DELETE_MEDIA_LIST_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'DELETE_MEDIA_LIST_ERROR' });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
@@ -103,7 +127,7 @@ const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirest
       });
     dispatch({ type: 'ADD_MOVIE_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'ADD_MOVIE_ERROR' });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
@@ -119,14 +143,14 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
       });
     dispatch({ type: 'REMOVE_MOVIE_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'REMOVE_MOVIE_ERROR', payload: err });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
 const addMovieToWatchlist = (movie) => async (dispatch, getState, { getFirestore }) => {
   const { id } = movie;
-  const { uid } = getState().firebase.auth;
   try {
+    const { uid } = getState().firebase.auth;
     const firestore = getFirestore();
     await firestore
       .collection('watchlists')
@@ -136,7 +160,7 @@ const addMovieToWatchlist = (movie) => async (dispatch, getState, { getFirestore
       });
     dispatch({ type: 'ADD_MOVIE_WATCHLIST_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'ADD_MOVIE_WATCHLIST_ERROR' });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
@@ -153,7 +177,7 @@ const removeMovieFromWatchlist = (movie) => async (dispatch, getState, { getFire
       });
     dispatch({ type: 'REMOVE_MOVIE_WATCHLIST_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'REMOVE_MOVIE_WATCHLIST_ERROR', payload: err });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
@@ -174,7 +198,7 @@ const setRating = (rating, item) => async (dispatch, getState, { getFirestore })
       });
     dispatch({ type: 'SET_RATING_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'SET_RATING_ERROR', payload: err });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
@@ -195,7 +219,7 @@ const removeRating = (item) => async (dispatch, getState, { getFirestore }) => {
       });
     dispatch({ type: 'REMOVE_RATING_SUCCESS' });
   } catch (err) {
-    dispatch({ type: 'REMOVE_RATING_ERROR', payload: err });
+    dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 

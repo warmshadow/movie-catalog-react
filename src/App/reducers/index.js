@@ -8,10 +8,12 @@ import movieReducer from './movieReducer';
 import mediaListsReducer from './mediaListsReducer';
 import ratingsReducer from './ratingsReducer';
 import watchlistReducer from './watchlistReducer';
+import errorReducer from './errorReducer';
 
 export default combineReducers({
   auth: authReducer,
   config: configReducer,
+  error: errorReducer,
   movies: moviesReducer,
   movie: movieReducer,
   mediaLists: mediaListsReducer,
