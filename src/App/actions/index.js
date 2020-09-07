@@ -6,6 +6,8 @@ const setConfig = () => async (dispatch) => {
     dispatch({ type: 'SET_CONFIG', payload: res.data });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err.response.data });
+    // reset isPending to false so App component renders routes
+    dispatch({ type: 'RESET_CONFIG_ON_ERROR' });
   }
 };
 
