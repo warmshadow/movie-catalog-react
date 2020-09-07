@@ -9,9 +9,9 @@ import { removeMovieFromList as removeMovieFromListAction } from '../actions';
 import { useConfirmationModal } from '../components/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
 
-function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromList }) {
+function List({ auth, mediaList, requesting, movies, baseUrl, listId, removeMovieFromList }) {
   const modalContext = useConfirmationModal();
-  const { fetchOnListChange, movies } = useFetchListMovies();
+  const { fetchOnListChange } = useFetchListMovies();
 
   const removeFromList = async (item) => {
     const result = await modalContext.showConfirmation({
@@ -33,16 +33,16 @@ function List({ auth, mediaList, requesting, baseUrl, listId, removeMovieFromLis
       const orderedItems = [...mediaList.items].reverse();
       fetchOnListChange(orderedItems);
 
-      if (movies) {
-        return (
-          <div>
-            <h2 className="mt-3 mb-5">{mediaList.name}</h2>
-            <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
-          </div>
-        );
-      }
-      return <Spinner animation="border" />;
+      if (movies.isPending) return <Spinner animation="border" />;
+
+      return (
+        <div>
+          <h2 className="mt-3 mb-5">{mediaList.name}</h2>
+          <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+        </div>
+      );
     }
+
     return <Redirect to="/notfound" />;
   }
 
@@ -60,6 +60,7 @@ const mapStateToProps = (state, ownProps) => {
     auth: state.firebase.auth,
     mediaList,
     requesting,
+    movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
     listId: id,
   };

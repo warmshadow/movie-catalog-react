@@ -9,9 +9,9 @@ import { removeRating as removeRatingAction } from '../actions';
 import { useConfirmationModal } from '../components/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
 
-function Ratings({ auth, ratingsList, requesting, baseUrl, removeRating }) {
+function Ratings({ auth, ratingsList, requesting, movies, baseUrl, removeRating }) {
   const modalContext = useConfirmationModal();
-  const { fetchOnListChange, movies } = useFetchListMovies();
+  const { fetchOnListChange } = useFetchListMovies();
 
   const removeFromList = async (item) => {
     const result = await modalContext.showConfirmation({
@@ -35,16 +35,16 @@ function Ratings({ auth, ratingsList, requesting, baseUrl, removeRating }) {
       const orderedItems = [...ratingsList.items].reverse();
       fetchOnListChange(orderedItems);
 
-      if (movies) {
-        return (
-          <div>
-            <h2 className="mt-3 mb-5">My ratings</h2>
-            <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
-          </div>
-        );
-      }
-      return <Spinner animation="border" />;
+      if (movies.isPending) return <Spinner animation="border" />;
+
+      return (
+        <div>
+          <h2 className="mt-3 mb-5">My ratings</h2>
+          <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+        </div>
+      );
     }
+
     return <Redirect to="/notfound" />;
   }
 
@@ -62,6 +62,7 @@ const mapStateToProps = (state, ownProps) => {
     auth: state.firebase.auth,
     ratingsList,
     requesting,
+    movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
   };
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import Spinner from 'react-bootstrap/Spinner';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
@@ -26,8 +25,6 @@ function MovieList({
   removeRating,
   addToWatchlist,
 }) {
-  if (movies.isPending) return <Spinner animation="border" />;
-
   const listItems = movies.results || movies.items;
 
   return listItems.length ? (
