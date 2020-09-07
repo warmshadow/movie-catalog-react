@@ -14,10 +14,7 @@ function Home() {
           <Link to="/category/popular">Popular</Link>
         </ListGroup.Item>
         <ListGroup.Item>
-          <Link to="/category/documentary">Documentary</Link>
-        </ListGroup.Item>
-        <ListGroup.Item>
-          <Link to="/category/lithuanian">Lithuanian</Link>
+          <Link to="/category/upcoming">Upcoming</Link>
         </ListGroup.Item>
       </ListGroup>
     </div>

@@ -1,4 +1,18 @@
 const INITIAL_STATE = {
+  categories: {
+    toprated: {
+      pathName: 'top_rated',
+      name: 'Top Rated',
+    },
+    popular: {
+      pathName: 'popular',
+      name: 'Popular',
+    },
+    upcoming: {
+      pathName: 'upcoming',
+      name: 'Upcoming',
+    },
+  },
   imdbBaseUrl: 'https://www.imdb.com/title/',
   isPending: true,
 };

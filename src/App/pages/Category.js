@@ -12,54 +12,24 @@ import pageIsInt from '../helpers';
 import useAddToList from '../hooks/useAddToList';
 import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
-const CATEGORIES = {
-  toprated: {
-    route: 'toprated',
-    name: 'Top Rated',
-    params: {
-      sort_by: 'vote_average.desc',
-      'vote_count.gte': 200,
-    },
-  },
-  popular: {
-    name: 'Popular',
-    params: {
-      sort_by: 'popularity.desc',
-    },
-  },
-  documentary: {
-    name: 'Documentary',
-    params: {
-      with_genres: '99',
-      sort_by: 'vote_average.desc',
-      'vote_count.gte': 200,
-    },
-  },
-  lithuanian: {
-    name: 'Lithuanian',
-    params: {
-      with_original_language: 'lt',
-    },
-  },
-};
-
-function Category({ movies, baseUrl, setMoviesCategory, clearMovies }) {
+function Category({ categories, movies, baseUrl, setMoviesCategory, clearMovies }) {
   const { title, pageNum } = useParams();
   const basePath = `/category/${title}`;
+  const category = categories[title];
 
   const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
   const addToWatchlist = useAddToWatchlist();
 
   useEffect(() => {
-    if (CATEGORIES[title]) {
-      const { params } = CATEGORIES[title];
-      setMoviesCategory(params, pageNum);
+    if (category) {
+      const { pathName } = category;
+      setMoviesCategory(pathName, pageNum);
     }
 
     return () => clearMovies();
-  }, [title, pageNum, setMoviesCategory, clearMovies]);
+  }, [title, pageNum, setMoviesCategory, clearMovies, categories, category]);
 
-  if (!CATEGORIES[title]) return <Redirect to="/notfound" />;
+  if (!category) return <Redirect to="/notfound" />;
 
   if (!pageIsInt(pageNum)) return <Redirect to="/notfound" />;
 
@@ -67,7 +37,7 @@ function Category({ movies, baseUrl, setMoviesCategory, clearMovies }) {
 
   return (
     <>
-      <h2 className="font-italic mt-3 mb-5">{`${CATEGORIES[title].name} MOVIES`}</h2>
+      <h2 className="font-italic mt-3 mb-5">{`${category.name} MOVIES`}</h2>
       <MovieList
         movies={movies}
         baseUrl={baseUrl}
@@ -82,6 +52,7 @@ function Category({ movies, baseUrl, setMoviesCategory, clearMovies }) {
 
 const mapStateToProps = (state) => {
   return {
+    categories: state.config.categories,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
   };

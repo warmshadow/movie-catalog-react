@@ -11,10 +11,10 @@ const setConfig = () => async (dispatch) => {
   }
 };
 
-const setMoviesCategory = (params, pageNum) => async (dispatch) => {
+const setMoviesCategory = (category, pageNum) => async (dispatch) => {
   try {
-    const res = await tmdb.get('/discover/movie', {
-      params: { ...params, page: pageNum },
+    const res = await tmdb.get(`/movie/${category}`, {
+      params: { page: pageNum },
     });
     dispatch({ type: 'SET_MOVIES', payload: res.data });
   } catch (err) {
