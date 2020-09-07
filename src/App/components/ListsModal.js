@@ -11,8 +11,6 @@ function ListsModal({ show, handleClose, mediaLists, auth, item, addMovieToList 
   if (mediaLists && auth.uid) {
     const userMediaLists = mediaLists.filter((list) => list.userId === auth.uid);
 
-    if (userMediaLists.length === 0) return <h3>No lists found</h3>;
-
     return (
       <Modal show={show} onHide={handleClose}>
         <Modal.Header>
