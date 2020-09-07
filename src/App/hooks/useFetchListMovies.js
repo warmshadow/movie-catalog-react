@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setMoviesList } from '../actions';
+import { setMoviesList, clearMovies } from '../actions';
 
 function useFetchListMovies() {
   const [movieIds, setMovieIds] = useState(null);
@@ -11,6 +11,8 @@ function useFetchListMovies() {
     if (movieIds) {
       dispatch(setMoviesList(movieIds));
     }
+
+    return () => dispatch(clearMovies());
   }, [dispatch, movieIds]);
 
   const fetchOnListChange = (items) => {

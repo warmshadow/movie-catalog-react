@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
-import { setMoviesCategory as setMoviesCategoryAction } from '../actions';
+import {
+  setMoviesCategory as setMoviesCategoryAction,
+  clearMovies as clearMoviesAction,
+} from '../actions';
 import MovieList from '../components/MovieList';
 import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
@@ -40,7 +43,7 @@ const CATEGORIES = {
   },
 };
 
-function Category({ movies, baseUrl, setMoviesCategory }) {
+function Category({ movies, baseUrl, setMoviesCategory, clearMovies }) {
   const { title, pageNum } = useParams();
   const basePath = `/category/${title}`;
 
@@ -52,7 +55,9 @@ function Category({ movies, baseUrl, setMoviesCategory }) {
       const { params } = CATEGORIES[title];
       setMoviesCategory(params, pageNum);
     }
-  }, [title, pageNum, setMoviesCategory]);
+
+    return () => clearMovies();
+  }, [title, pageNum, setMoviesCategory, clearMovies]);
 
   if (!CATEGORIES[title]) return <Redirect to="/notfound" />;
 
@@ -84,6 +89,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setMoviesCategory: setMoviesCategoryAction,
+  clearMovies: clearMoviesAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Category);

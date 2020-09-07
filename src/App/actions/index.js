@@ -6,8 +6,6 @@ const setConfig = () => async (dispatch) => {
 };
 
 const setMoviesCategory = (params, pageNum) => async (dispatch) => {
-  dispatch({ type: 'SET_MOVIES_PENDING' });
-
   const res = await tmdb.get('/discover/movie', {
     params: { ...params, page: pageNum },
   });
@@ -15,8 +13,6 @@ const setMoviesCategory = (params, pageNum) => async (dispatch) => {
 };
 
 const setMoviesSearch = (title, pageNum) => async (dispatch) => {
-  dispatch({ type: 'SET_MOVIES_PENDING' });
-
   const res = await tmdb.get('/search/movie', {
     params: {
       query: title,
@@ -38,8 +34,6 @@ const setMovie = (id) => async (dispatch) => {
 };
 
 const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
-  dispatch({ type: 'SET_MOVIES_PENDING' });
-
   const res = await tmdb.get(`/movie/${id}/similar`, {
     params: {
       page: pageNum,
@@ -53,13 +47,17 @@ const fetchMovie = async (movie) => {
   return res.data;
 };
 const setMoviesList = (movieIds) => async (dispatch) => {
-  dispatch({ type: 'SET_MOVIES_PENDING' });
-
   const movies = {};
   const fetchMovies = movieIds.map(fetchMovie);
   movies.items = await Promise.all(fetchMovies);
 
   dispatch({ type: 'SET_MOVIES', payload: movies });
+};
+
+const clearMovies = () => {
+  return {
+    type: 'SET_MOVIES_PENDING',
+  };
 };
 
 const createMediaList = (list) => async (dispatch, getState, { getFirestore }) => {
@@ -204,6 +202,7 @@ export {
   setMovie,
   setMoviesSimilar,
   setMoviesList,
+  clearMovies,
   createMediaList,
   deleteMediaList,
   addMovieToList,

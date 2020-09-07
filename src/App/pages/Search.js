@@ -2,14 +2,17 @@ import React, { useEffect } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from 'react-bootstrap/Spinner';
-import { setMoviesSearch as setMoviesSearchAction } from '../actions';
+import {
+  setMoviesSearch as setMoviesSearchAction,
+  clearMovies as clearMoviesAction,
+} from '../actions';
 import MovieList from '../components/MovieList';
 import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
 import useAddToList from '../hooks/useAddToList';
 import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
-function Search({ movies, setMoviesSearch, baseUrl }) {
+function Search({ movies, setMoviesSearch, clearMovies, baseUrl }) {
   const { title, pageNum } = useParams();
   const basePath = `/search/${title}`;
 
@@ -18,7 +21,9 @@ function Search({ movies, setMoviesSearch, baseUrl }) {
 
   useEffect(() => {
     setMoviesSearch(title, pageNum);
-  }, [title, pageNum, setMoviesSearch]);
+
+    return () => clearMovies();
+  }, [title, pageNum, setMoviesSearch, clearMovies]);
 
   if (!pageIsInt(pageNum)) return <Redirect to="/notfound" />;
 
@@ -49,6 +54,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   setMoviesSearch: setMoviesSearchAction,
+  clearMovies: clearMoviesAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);
