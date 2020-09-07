@@ -223,6 +223,12 @@ const removeRating = (item) => async (dispatch, getState, { getFirestore }) => {
   }
 };
 
+const clearError = () => {
+  return {
+    type: 'CLEAR_ERROR',
+  };
+};
+
 export {
   setConfig,
   setMoviesCategory,
@@ -240,4 +246,5 @@ export {
   removeMovieFromWatchlist,
   setRating,
   removeRating,
+  clearError,
 };
