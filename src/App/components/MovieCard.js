@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -6,9 +6,9 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import { useSelector } from 'react-redux';
 import Rating from './Rating';
-import RatingPopover from './RatingPopover';
+import RateButton from './RateButton';
 
-const Options = ({ remove, add, addToWatchlist }) => {
+const OptionButtons = ({ remove, add, addToWatchlist }) => {
   const RemoveButton = () => (
     <Button size="sm" variant="outline-dark" onClick={remove}>
       Remove
@@ -16,7 +16,15 @@ const Options = ({ remove, add, addToWatchlist }) => {
   );
 
   const AddButton = () => (
-    <Button block style={{ marginBottom: '1rem' }} size="sm" variant="outline-dark" onClick={add}>
+    <Button
+      block
+      style={{
+        marginBottom: '1rem',
+      }}
+      size="sm"
+      variant="outline-dark"
+      onClick={add}
+    >
       Add To List
     </Button>
   );
@@ -44,6 +52,14 @@ const Options = ({ remove, add, addToWatchlist }) => {
   );
 };
 
+const renderRating = (rating, setRating, removeRating) => {
+  return rating ? (
+    <Rating rating={rating} setRating={setRating} removable removeRating={removeRating} />
+  ) : (
+    <RateButton placement="bottom" setRating={setRating} />
+  );
+};
+
 function MovieCard({
   id,
   posterPath,
@@ -60,14 +76,9 @@ function MovieCard({
 }) {
   const { auth } = useSelector((state) => state.firebase);
 
-  const [show, setShow] = useState(false);
-  const target = useRef(null);
-
-  useEffect(() => setShow(false), [rating]);
-
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">
-      <Row noGutters style={{ width: '100%' }}>
+      <Row noGutters>
         <Link to={`/movie/${id}`} className="text-decoration-none stretched-link" />
         <Col md={2}>
           <Card.Img src={`${baseUrl}w342${posterPath}`} />
@@ -76,38 +87,17 @@ function MovieCard({
           <Card.Body>
             <Card.Title>{title}</Card.Title>
             <Card.Subtitle style={{ lineHeight: 3 }}>{releaseDate}</Card.Subtitle>
-            <Card.Subtitle style={{ fontWeight: 'bold', lineHeight: 3 }}>
+            <Card.Subtitle
+              style={{
+                fontWeight: 'bold',
+                lineHeight: 3,
+              }}
+            >
               {voteAverage}
             </Card.Subtitle>
-            {auth.uid &&
-              (rating ? (
-                <Rating
-                  rating={rating}
-                  setRating={setRating}
-                  removable
-                  removeRating={removeRating}
-                />
-              ) : (
-                <div>
-                  <Button
-                    ref={target}
-                    size="sm"
-                    style={{ position: 'relative', zIndex: 100 }}
-                    onClick={() => setShow(!show)}
-                  >
-                    Rate it
-                  </Button>
-                  <RatingPopover
-                    target={target}
-                    show={show}
-                    setShow={setShow}
-                    placement="bottom"
-                    setRating={setRating}
-                  />
-                </div>
-              ))}
+            {auth.uid && renderRating(rating, setRating, removeRating)}
           </Card.Body>
-          <Options remove={remove} add={add} addToWatchlist={addToWatchlist} />
+          <OptionButtons remove={remove} add={add} addToWatchlist={addToWatchlist} />
         </Col>
       </Row>
     </Card>
