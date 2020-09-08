@@ -19,7 +19,6 @@ function RateButton({ placement, setRating }) {
     );
 
     return (
-      // eslint-disable-next-line react/destructuring-assignment
       <Popover {...props} style={{ ...props.style }} className="rating-popover">
         <Popover.Title as="h5" className="px-5">
           Your rating
