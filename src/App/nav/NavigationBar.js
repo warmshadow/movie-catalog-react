@@ -30,9 +30,7 @@ function NavigationBar({ auth, profile, signOut }) {
         <Link onClick={handleCollapse} to="/">
           <div className="d-flex flex-column justify-content-center align-items-center mr-3">
             <Navbar.Brand className="mr-0">Movie Catalog</Navbar.Brand>
-            <span className="text-info text-uppercase" style={{ fontSize: '0.8rem' }}>
-              {`${firstName || 'React'} ${lastName || ''}`}
-            </span>
+            <h6 className="text-info">{`${firstName || 'React'} ${lastName || ''}`}</h6>
           </div>
         </Link>
       </Navbar.Brand>

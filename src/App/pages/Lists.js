@@ -16,14 +16,7 @@ import { useConfirmationModal } from '../components/ConfirmationModalContext';
 
 const Options = ({ deleteMediaList }) => {
   return (
-    <div
-      style={{
-        position: 'absolute',
-        right: 0,
-        zIndex: 100,
-        padding: '1.25rem',
-      }}
-    >
+    <div className="position-absolute right-0 z-index-100 p-4">
       <Button variant="outline-danger" className="btn-sm" onClick={deleteMediaList}>
         Delete List
       </Button>
