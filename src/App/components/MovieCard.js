@@ -16,15 +16,7 @@ const OptionButtons = ({ remove, add, addToWatchlist }) => {
   );
 
   const AddButton = () => (
-    <Button
-      block
-      style={{
-        marginBottom: '1rem',
-      }}
-      size="sm"
-      variant="outline-dark"
-      onClick={add}
-    >
+    <Button className="option-btn" block size="sm" variant="outline-dark" onClick={add}>
       Add To List
     </Button>
   );
@@ -36,19 +28,11 @@ const OptionButtons = ({ remove, add, addToWatchlist }) => {
   );
 
   return (
-    <Card.Body
-      className="d-flex flex-column align-items-center justify-content-center"
-      style={{
-        position: 'absolute',
-        right: 0,
-        zIndex: 100,
-        height: '100%',
-      }}
-    >
+    <>
       {add && <AddButton />}
       {remove && <RemoveButton />}
       {addToWatchlist && <AddToWatchlistButton />}
-    </Card.Body>
+    </>
   );
 };
 
@@ -86,18 +70,15 @@ function MovieCard({
         <Col md={10} className="d-flex align-items-center">
           <Card.Body>
             <Card.Title>{title}</Card.Title>
-            <Card.Subtitle style={{ lineHeight: 3 }}>{releaseDate}</Card.Subtitle>
-            <Card.Subtitle
-              style={{
-                fontWeight: 'bold',
-                lineHeight: 3,
-              }}
-            >
+            <Card.Subtitle className="moviecard-subtitle">{releaseDate}</Card.Subtitle>
+            <Card.Subtitle className="moviecard-subtitle font-weight-bold">
               {voteAverage}
             </Card.Subtitle>
             {auth.uid && renderRating(rating, setRating, removeRating)}
           </Card.Body>
-          <OptionButtons remove={remove} add={add} addToWatchlist={addToWatchlist} />
+          <Card.Body className="moviecard-options d-flex flex-column align-items-center justify-content-center">
+            <OptionButtons remove={remove} add={add} addToWatchlist={addToWatchlist} />
+          </Card.Body>
         </Col>
       </Row>
     </Card>

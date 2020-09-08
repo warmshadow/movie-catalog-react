@@ -13,21 +13,14 @@ function RateButton({ placement, setRating }) {
 
   const ratingPopover = (props) => {
     const CloseButton = () => (
-      <span
-        style={{
-          position: 'absolute',
-          right: 10,
-          color: 'darkred',
-          cursor: 'pointer',
-        }}
-      >
+      <span className="popover-close">
         <FontAwesomeIcon icon={faTimes} onClick={() => setShow(false)} />
       </span>
     );
 
     return (
       // eslint-disable-next-line react/destructuring-assignment
-      <Popover {...props} style={{ ...props.style, zIndex: 100, textAlign: 'center' }}>
+      <Popover {...props} style={{ ...props.style }} className="rating-popover">
         <Popover.Title as="h5" className="px-5">
           Your rating
           <CloseButton />
@@ -41,15 +34,7 @@ function RateButton({ placement, setRating }) {
 
   return (
     <div>
-      <Button
-        ref={target}
-        size="sm"
-        style={{
-          position: 'relative',
-          zIndex: 100,
-        }}
-        onClick={() => setShow(!show)}
-      >
+      <Button ref={target} size="sm" onClick={() => setShow(!show)} className="rate-btn">
         Rate it
       </Button>
       <Overlay

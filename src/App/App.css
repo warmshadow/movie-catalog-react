@@ -2,6 +2,8 @@
   text-align: center;
 }
 
+/* MovieCard */
+
 .moviecard {
   opacity: 0.9;
 }
@@ -10,6 +12,42 @@
   opacity: 1;
   transition: 0.3s;
 }
+
+.moviecard-subtitle {
+  line-height: 3;
+}
+
+.moviecard-options {
+  position: absolute;
+  right: 0;
+  z-index: 100;
+  height: 100%;
+}
+
+.option-btn {
+  margin-bottom: 1rem;
+}
+
+/* RateButton */
+
+.rate-btn {
+  position: relative;
+  z-index: 100;
+}
+
+.rating-popover {
+  z-index: 100;
+  text-align: center;
+}
+
+.popover-close {
+  position: absolute;
+  right: 10px;
+  color: darkred;
+  cursor: pointer;
+}
+
+/* Other */
 
 .listItem:hover {
   color: #1a1a1a;
