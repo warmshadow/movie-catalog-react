@@ -7,14 +7,18 @@ import { faStar as fasStar, faTimes } from '@fortawesome/free-solid-svg-icons';
 function Rating({ rating, setRating, removable, removeRating }) {
   const [showRemove, setShowRemove] = useState(false);
 
+  const RemoveButton = () => (
+    <span
+      role="button"
+      className={`${showRemove ? 'd-inline' : 'd-none'} position-absolute right-0`}
+    >
+      <FontAwesomeIcon icon={faTimes} onClick={removeRating} />
+    </span>
+  );
+
   return (
     <div
-      style={{
-        display: 'inline-block',
-        position: 'relative',
-        zIndex: '100',
-        padding: '0 1.2rem',
-      }}
+      className="d-inline-block position-relative z-index-100 px-3"
       onMouseEnter={removable ? () => setShowRemove(true) : null}
       onMouseLeave={removable ? () => setShowRemove(false) : null}
     >
@@ -25,16 +29,7 @@ function Rating({ rating, setRating, removable, removeRating }) {
         onClick={(newRating) => setRating(newRating)}
         fractions={2}
       />
-      <span
-        style={{
-          display: `${showRemove ? 'inline' : 'none'}`,
-          position: 'absolute',
-          right: 0,
-          cursor: 'pointer',
-        }}
-      >
-        <FontAwesomeIcon icon={faTimes} onClick={removeRating} />
-      </span>
+      <RemoveButton />
     </div>
   );
 }
