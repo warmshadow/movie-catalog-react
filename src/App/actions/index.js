@@ -210,15 +210,15 @@ const removeRating = (item) => async (dispatch, getState, { getFirestore }) => {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
     await firestore
-      .collection('usersRatings')
-      .doc(uid)
-      .update({ [`items.${id}`]: firestore.FieldValue.delete() });
-    await firestore
       .collection('ratingsLists')
       .doc(uid)
       .update({
         items: firestore.FieldValue.arrayRemove({ id }),
       });
+    await firestore
+      .collection('usersRatings')
+      .doc(uid)
+      .update({ [`items.${id}`]: firestore.FieldValue.delete() });
     dispatch({ type: 'REMOVE_RATING_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
