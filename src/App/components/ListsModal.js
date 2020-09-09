@@ -7,9 +7,28 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import { addMovieToList as addMovieToListAction } from '../actions';
 
+const ListsToSelect = ({ lists, item, handleSelectList }) => (
+  <ListGroup>
+    {lists.length !== 0 ? (
+      lists.map((list) => (
+        <ListGroup.Item action onClick={() => handleSelectList(list.id, item)} key={list.id}>
+          {list.name}
+        </ListGroup.Item>
+      ))
+    ) : (
+      <p>No lists found</p>
+    )}
+  </ListGroup>
+);
+
 function ListsModal({ show, handleClose, mediaLists, auth, item, addMovieToList }) {
   if (mediaLists && auth.uid) {
     const userMediaLists = mediaLists.filter((list) => list.userId === auth.uid);
+
+    const handleSelectList = (listId, itemToAdd) => {
+      addMovieToList(listId, itemToAdd);
+      handleClose();
+    };
 
     return (
       <Modal show={show} onHide={handleClose}>
@@ -17,24 +36,7 @@ function ListsModal({ show, handleClose, mediaLists, auth, item, addMovieToList 
           <Modal.Title>Add to:</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ListGroup>
-            {userMediaLists.length !== 0 ? (
-              userMediaLists.map((list) => (
-                <ListGroup.Item
-                  action
-                  onClick={() => {
-                    addMovieToList(list.id, item);
-                    handleClose();
-                  }}
-                  key={list.id}
-                >
-                  {list.name}
-                </ListGroup.Item>
-              ))
-            ) : (
-              <p>No lists found</p>
-            )}
-          </ListGroup>
+          <ListsToSelect lists={userMediaLists} item={item} handleSelectList={handleSelectList} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
