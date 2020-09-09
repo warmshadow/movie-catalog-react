@@ -4,19 +4,28 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
+// eslint-disable-next-line camelcase
+const keysToCamel = ({ poster_path, release_date, vote_average, ...object }) => ({
+  posterPath: poster_path,
+  releaseDate: release_date,
+  voteAverage: vote_average,
+  ...object,
+});
+
 function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addToWatchlist }) {
+  const item = keysToCamel(movie);
   const {
-    poster_path: posterPath,
+    posterPath,
     title,
     tagline,
     runtime,
-    vote_average: voteAverage,
-    original_language: originalLanguage,
+    voteAverage,
+    originalLanguage,
     overview,
     genres,
-    imdb_id: imdbId,
+    imdbId,
     homepage,
-  } = movie;
+  } = item;
 
   return (
     <Row noGutters>
@@ -61,10 +70,10 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addTo
             )}
           </Card.Body>
           <Card.Footer>
-            <Button className="mr-3" variant="outline-dark" onClick={() => addToList(movie)}>
+            <Button className="mr-3" variant="outline-dark" onClick={() => addToList(item)}>
               Add to List
             </Button>
-            <Button variant="outline-dark" onClick={() => addToWatchlist(movie)}>
+            <Button variant="outline-dark" onClick={() => addToWatchlist(item)}>
               Add to Watchlist
             </Button>
           </Card.Footer>

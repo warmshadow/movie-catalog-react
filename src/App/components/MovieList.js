@@ -30,9 +30,8 @@ function MovieList({
   return listItems.length ? (
     <>
       {listItems.map((movie) => {
-        let item = keysToCamel(movie);
+        const item = keysToCamel(movie);
         const { id, posterPath, title, releaseDate, voteAverage } = item;
-        item = { id, posterPath, title, releaseDate, voteAverage };
 
         const rating = userRatings && userRatings.items[id];
 
@@ -46,9 +45,9 @@ function MovieList({
             rating={rating && rating}
             baseUrl={baseUrl}
             key={id}
-            add={addToList ? () => addToList(movie) : null}
+            add={addToList ? () => addToList(item) : null}
             remove={removeFromList ? () => removeFromList(item) : null}
-            addToWatchlist={addToWatchlist ? () => addToWatchlist(movie) : null}
+            addToWatchlist={addToWatchlist ? () => addToWatchlist(item) : null}
             setRating={
               (newRating) =>
                 setRating(newRating, { id, posterPath, title, releaseDate, voteAverage })
