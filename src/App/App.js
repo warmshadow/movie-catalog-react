@@ -63,20 +63,26 @@ function App({ config, setConfig, error }) {
         <Route exact path={['/movie/:id', '/movie/:id/:pageNum']}>
           <Movie />
         </Route>
-        <ConfirmationModalContextProvider>
-          <Route exact path="/lists">
+        <Route exact path="/lists">
+          <ConfirmationModalContextProvider>
             <Lists />
-          </Route>
-          <Route exact path="/lists/:id">
+          </ConfirmationModalContextProvider>
+        </Route>
+        <Route exact path="/lists/:id">
+          <ConfirmationModalContextProvider>
             <List />
-          </Route>
-          <Route exact path="/ratings/:id">
+          </ConfirmationModalContextProvider>
+        </Route>
+        <Route exact path="/ratings/:id">
+          <ConfirmationModalContextProvider>
             <Ratings />
-          </Route>
-          <Route exact path="/watchlist/:id">
+          </ConfirmationModalContextProvider>
+        </Route>
+        <Route exact path="/watchlist/:id">
+          <ConfirmationModalContextProvider>
             <Watchlist />
-          </Route>
-        </ConfirmationModalContextProvider>
+          </ConfirmationModalContextProvider>
+        </Route>
         <Route exact path="/signin">
           <SignIn />
         </Route>
