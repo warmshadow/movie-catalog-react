@@ -36,6 +36,12 @@
   margin-bottom: 1rem;
 }
 
+/* MovieDetails */
+
+.moviedetails-header {
+  color: inherit;
+}
+
 /* RateButton */
 
 .rate-btn {

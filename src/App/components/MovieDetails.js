@@ -21,6 +21,66 @@ const keysToCamel = ({
   ...object,
 });
 
+const Directors = ({ directors }) => {
+  if (!directors.length) {
+    return null;
+  }
+  return directors.map((director) => (
+    <Card.Text key={director.name}>{`Dir. ${director.name}`}</Card.Text>
+  ));
+};
+
+const Info = ({ voteAverage, runtime, language }) => (
+  <Card.Text key={voteAverage}>
+    <span>{`${voteAverage} / `}</span>
+    <span>{runtime && `${runtime}min / `}</span>
+    <span>{`${language}`}</span>
+  </Card.Text>
+);
+
+const Genres = ({ genres }) => {
+  if (!genres.length) {
+    return null;
+  }
+  return genres.map((genre) => (
+    <Card.Text className="d-inline" key={genre.id}>
+      {`${genre.name}  `}
+    </Card.Text>
+  ));
+};
+
+const Overview = ({ overview }) => (
+  <Card.Subtitle className="text-muted font-italic my-3" key="overview">
+    {overview || 'No overview..'}
+  </Card.Subtitle>
+);
+
+const ExternalLinks = ({ imdbId, imdbBaseUrl, homepage }) => (
+  <>
+    {imdbId && (
+      <Button key={imdbId} variant="warning" href={`${imdbBaseUrl}${imdbId}`} target="_blank">
+        IMDB
+      </Button>
+    )}
+    {homepage && (
+      <Button key={homepage} variant="info" href={homepage} target="_blank">
+        Homepage
+      </Button>
+    )}
+  </>
+);
+
+const OptionButtons = ({ addToList, addToWatchlist, item }) => (
+  <>
+    <Button className="mr-3" variant="outline-dark" onClick={() => addToList(item)}>
+      Add to List
+    </Button>
+    <Button variant="outline-dark" onClick={() => addToWatchlist(item)}>
+      Add to Watchlist
+    </Button>
+  </>
+);
+
 function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addToWatchlist }) {
   const item = keysToCamel(movie);
   const {
@@ -42,49 +102,20 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addTo
         <Card.Img src={`${baseUrl}w780${posterPath}`} alt="Poster" />
       </Col>
       <Col md={6} lg={8} className="d-flex">
-        <Card className="bg-transparent border-0">
+        <Card className="bg-transparent border-0 w-100">
+          <Card.Header>
+            <h1 className="moviedetails-header">{title}</h1>
+            <Card.Text className="font-italic">{tagline}</Card.Text>
+          </Card.Header>
           <Card.Body>
-            <Card.Title>{title}</Card.Title>
-            <Card.Text className="font-italic" key={tagline}>
-              {tagline}
-            </Card.Text>
-            {directors.map((director) => (
-              <Card.Text key={director.name}>{`Dir. ${director.name}`}</Card.Text>
-            ))}
-            <Card.Text key={voteAverage}>
-              {`${voteAverage} / ${runtime}min / ${originalLanguage}`}
-            </Card.Text>
-            {genres.map((genre) => (
-              <Card.Text className="d-inline" key={genre.id}>
-                {`${genre.name}  `}
-              </Card.Text>
-            ))}
-            <Card.Subtitle className="text-muted font-italic my-3" key={overview.substring(0, 9)}>
-              {overview}
-            </Card.Subtitle>
-            {imdbId && (
-              <Button
-                key={imdbId}
-                variant="warning"
-                href={`${imdbBaseUrl}${imdbId}`}
-                target="_blank"
-              >
-                IMDB
-              </Button>
-            )}
-            {homepage && (
-              <Button key={homepage} variant="info" href={homepage} target="_blank">
-                Homepage
-              </Button>
-            )}
+            <Directors directors={directors} />
+            <Info voteAverage={voteAverage} runtime={runtime} language={originalLanguage} />
+            <Genres genres={genres} />
+            <Overview overview={overview} />
+            <ExternalLinks imdbId={imdbId} imdbBaseUrl={imdbBaseUrl} homepage={homepage} />
           </Card.Body>
           <Card.Footer>
-            <Button className="mr-3" variant="outline-dark" onClick={() => addToList(item)}>
-              Add to List
-            </Button>
-            <Button variant="outline-dark" onClick={() => addToWatchlist(item)}>
-              Add to Watchlist
-            </Button>
+            <OptionButtons addToList={addToList} addToWatchlist={addToWatchlist} item={item} />
           </Card.Footer>
         </Card>
       </Col>
