@@ -65,7 +65,7 @@ function MovieCard({
       <Row noGutters>
         <Link to={`/movie/${id}`} className="text-decoration-none stretched-link" />
         <Col md={2}>
-          <Card.Img src={`${baseUrl}w342${posterPath}`} />
+          <Card.Img src={`${baseUrl}w342${posterPath}`} alt="Poster" />
         </Col>
         <Col md={10} className="d-flex align-items-center">
           <Card.Body>

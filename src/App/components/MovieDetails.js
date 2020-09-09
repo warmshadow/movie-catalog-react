@@ -1,14 +1,23 @@
+/* eslint-disable camelcase */
 import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
-// eslint-disable-next-line camelcase
-const keysToCamel = ({ poster_path, release_date, vote_average, ...object }) => ({
+const keysToCamel = ({
+  poster_path,
+  release_date,
+  vote_average,
+  original_language,
+  imdb_id,
+  ...object
+}) => ({
   posterPath: poster_path,
   releaseDate: release_date,
   voteAverage: vote_average,
+  originalLanguage: original_language,
+  imdbId: imdb_id,
   ...object,
 });
 
@@ -30,7 +39,7 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addTo
   return (
     <Row noGutters>
       <Col md={6} lg={4} className="d-flex">
-        <Card.Img src={`${baseUrl}w780${posterPath}`} alt="poster" />
+        <Card.Img src={`${baseUrl}w780${posterPath}`} alt="Poster" />
       </Col>
       <Col md={6} lg={8} className="d-flex">
         <Card className="bg-transparent border-0">
