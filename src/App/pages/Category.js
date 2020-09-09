@@ -7,18 +7,12 @@ import {
   clearMovies as clearMoviesAction,
 } from '../actions';
 import MovieList from '../components/MovieList';
-import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
-import useAddToList from '../hooks/useAddToList';
-import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
 function Category({ categories, movies, baseUrl, setMoviesCategory, clearMovies }) {
   const { title, pageNum } = useParams();
   const basePath = `/category/${title}`;
   const category = categories[title];
-
-  const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
-  const addToWatchlist = useAddToWatchlist();
 
   useEffect(() => {
     if (category) {
@@ -38,14 +32,7 @@ function Category({ categories, movies, baseUrl, setMoviesCategory, clearMovies 
   return (
     <>
       <h2 className="font-italic mt-3 mb-5">{`${category.name} MOVIES`}</h2>
-      <MovieList
-        movies={movies}
-        baseUrl={baseUrl}
-        basePath={basePath}
-        addToList={handleAdd}
-        addToWatchlist={addToWatchlist}
-      />
-      <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
+      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
 }

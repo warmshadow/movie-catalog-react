@@ -10,27 +10,27 @@ import RateButton from './RateButton';
 
 const OptionButtons = ({ remove, add, addToWatchlist }) => {
   const RemoveButton = () => (
-    <Button size="sm" variant="outline-dark" onClick={remove}>
+    <Button block size="sm" variant="outline-dark" onClick={remove}>
       Remove
     </Button>
   );
 
   const AddButton = () => (
-    <Button className="option-btn" block size="sm" variant="outline-dark" onClick={add}>
+    <Button block size="sm" variant="outline-dark" onClick={add}>
       Add To List
     </Button>
   );
 
   const AddToWatchlistButton = () => (
-    <Button size="sm" variant="outline-dark" onClick={addToWatchlist}>
+    <Button block size="sm" variant="outline-dark" onClick={addToWatchlist}>
       Add To Watchlist
     </Button>
   );
 
   return (
     <>
-      {add && <AddButton />}
       {remove && <RemoveButton />}
+      {add && <AddButton />}
       {addToWatchlist && <AddToWatchlistButton />}
     </>
   );
@@ -45,11 +45,7 @@ const renderRating = (rating, setRating, removeRating) => {
 };
 
 function MovieCard({
-  id,
-  posterPath,
-  title,
-  releaseDate,
-  voteAverage,
+  item,
   rating,
   baseUrl,
   remove,
@@ -59,6 +55,7 @@ function MovieCard({
   removeRating,
 }) {
   const { auth } = useSelector((state) => state.firebase);
+  const { id, posterPath, title, releaseDate, voteAverage } = item;
 
   return (
     <Card bg="secondary" className="text-dark mb-4 moviecard">

@@ -10,10 +10,7 @@ import {
 } from '../actions';
 import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
-import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
-import useAddToList from '../hooks/useAddToList';
-import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
 function Movie({
   movie,
@@ -27,9 +24,6 @@ function Movie({
 }) {
   const { id, pageNum } = useParams();
   const basePath = `/movie/${id}`;
-
-  const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
-  const addToWatchlist = useAddToWatchlist();
 
   useEffect(() => {
     setMovie(id);
@@ -57,22 +51,13 @@ function Movie({
         directors={directors}
         baseUrl={baseUrl}
         imdbBaseUrl={imdbBaseUrl}
-        addToList={handleAdd}
-        addToWatchlist={addToWatchlist}
       />
       <h3 className="mt-5 mb-5">Similar movies:</h3>
       {movies.isPending ? (
         <Spinner animation="border" />
       ) : (
-        <MovieList
-          movies={movies}
-          baseUrl={baseUrl}
-          basePath={basePath}
-          addToList={handleAdd}
-          addToWatchlist={addToWatchlist}
-        />
+        <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
       )}
-      <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
   );
 }

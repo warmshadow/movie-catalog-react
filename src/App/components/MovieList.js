@@ -2,9 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
+import { useLocation } from 'react-router-dom';
 import PageLinks from './PageLinks';
 import MovieCard from './MovieCard';
+import AddToListModal from './AddToListModal';
 import { setRating as setRatingAction, removeRating as removeRatingAction } from '../actions';
+import useAddToList from '../hooks/useAddToList';
+import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
 // eslint-disable-next-line camelcase
 const keysToCamel = ({ poster_path, release_date, vote_average, ...object }) => ({
@@ -18,42 +22,41 @@ function MovieList({
   movies,
   baseUrl,
   basePath,
-  addToList,
   removeFromList,
   userRatings,
   setRating,
   removeRating,
-  addToWatchlist,
 }) {
+  const { addToList, handleClose, selectedMovie, showModal } = useAddToList();
+  const addToWatchlist = useAddToWatchlist();
+
+  // check if inside watchlist route, for conditional 'add to watchlist' btn render
+  const location = useLocation();
+  const inWatchlist = location.pathname.split('/')[1] === 'watchlist';
+
   const listItems = movies.results || movies.items;
 
   return listItems.length ? (
     <>
       {listItems.map((movie) => {
         const item = keysToCamel(movie);
-        const { id, posterPath, title, releaseDate, voteAverage } = item;
 
-        const rating = userRatings && userRatings.items[id];
+        const rating = userRatings && userRatings.items[item.id];
 
         return (
           <MovieCard
-            id={id}
-            posterPath={posterPath}
-            title={title}
-            releaseDate={releaseDate}
-            voteAverage={voteAverage}
+            item={item}
             rating={rating && rating}
             baseUrl={baseUrl}
-            key={id}
-            add={addToList ? () => addToList(item) : null}
+            key={item.id}
+            add={() => addToList(item)}
             remove={removeFromList ? () => removeFromList(item) : null}
-            addToWatchlist={addToWatchlist ? () => addToWatchlist(item) : null}
+            addToWatchlist={inWatchlist ? null : () => addToWatchlist(item)}
             setRating={
-              (newRating) =>
-                setRating(newRating, { id, posterPath, title, releaseDate, voteAverage })
+              (newRating) => setRating(newRating, item)
               // eslint-disable-next-line react/jsx-curly-newline
             }
-            removeRating={() => removeRating({ id, posterPath, title, releaseDate, voteAverage })}
+            removeRating={() => removeRating(item)}
           />
         );
       })}
@@ -63,6 +66,7 @@ function MovieList({
           <PageLinks page={movies.page} totalPages={movies.total_pages} basePath={basePath} />
         )
       }
+      <AddToListModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
   ) : (
     <h2>No Items found</h2>

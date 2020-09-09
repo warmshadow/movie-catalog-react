@@ -4,6 +4,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import AddToListModal from './AddToListModal';
+import useAddToList from '../hooks/useAddToList';
+import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
 const keysToCamel = ({
   poster_path,
@@ -81,7 +84,7 @@ const OptionButtons = ({ addToList, addToWatchlist, item }) => (
   </>
 );
 
-function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addToWatchlist }) {
+function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl }) {
   const item = keysToCamel(movie);
   const {
     posterPath,
@@ -96,30 +99,36 @@ function MovieDetails({ movie, directors, baseUrl, imdbBaseUrl, addToList, addTo
     homepage,
   } = item;
 
+  const { addToList, handleClose, selectedMovie, showModal } = useAddToList();
+  const addToWatchlist = useAddToWatchlist();
+
   return (
-    <Row noGutters>
-      <Col md={6} lg={4} className="d-flex">
-        <Card.Img src={`${baseUrl}w780${posterPath}`} alt="Poster" />
-      </Col>
-      <Col md={6} lg={8} className="d-flex">
-        <Card className="bg-transparent border-0 w-100">
-          <Card.Header>
-            <h1 className="moviedetails-header">{title}</h1>
-            <Card.Text className="font-italic">{tagline}</Card.Text>
-          </Card.Header>
-          <Card.Body>
-            <Directors directors={directors} />
-            <Info voteAverage={voteAverage} runtime={runtime} language={originalLanguage} />
-            <Genres genres={genres} />
-            <Overview overview={overview} />
-            <ExternalLinks imdbId={imdbId} imdbBaseUrl={imdbBaseUrl} homepage={homepage} />
-          </Card.Body>
-          <Card.Footer>
-            <OptionButtons addToList={addToList} addToWatchlist={addToWatchlist} item={item} />
-          </Card.Footer>
-        </Card>
-      </Col>
-    </Row>
+    <>
+      <Row noGutters>
+        <Col md={6} lg={4} className="d-flex">
+          <Card.Img src={`${baseUrl}w780${posterPath}`} alt="Poster" />
+        </Col>
+        <Col md={6} lg={8} className="d-flex">
+          <Card className="bg-transparent border-0 w-100">
+            <Card.Header>
+              <h1 className="moviedetails-header">{title}</h1>
+              <Card.Text className="font-italic">{tagline}</Card.Text>
+            </Card.Header>
+            <Card.Body>
+              <Directors directors={directors} />
+              <Info voteAverage={voteAverage} runtime={runtime} language={originalLanguage} />
+              <Genres genres={genres} />
+              <Overview overview={overview} />
+              <ExternalLinks imdbId={imdbId} imdbBaseUrl={imdbBaseUrl} homepage={homepage} />
+            </Card.Body>
+            <Card.Footer>
+              <OptionButtons addToList={addToList} addToWatchlist={addToWatchlist} item={item} />
+            </Card.Footer>
+          </Card>
+        </Col>
+      </Row>
+      <AddToListModal show={showModal} item={selectedMovie} handleClose={handleClose} />
+    </>
   );
 }
 

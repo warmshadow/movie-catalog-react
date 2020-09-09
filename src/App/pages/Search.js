@@ -7,17 +7,11 @@ import {
   clearMovies as clearMoviesAction,
 } from '../actions';
 import MovieList from '../components/MovieList';
-import ListsModal from '../components/ListsModal';
 import pageIsInt from '../helpers';
-import useAddToList from '../hooks/useAddToList';
-import useAddToWatchlist from '../hooks/useAddToWatchlist';
 
 function Search({ movies, setMoviesSearch, clearMovies, baseUrl }) {
   const { title, pageNum } = useParams();
   const basePath = `/search/${title}`;
-
-  const { handleAdd, handleClose, selectedMovie, showModal } = useAddToList();
-  const addToWatchlist = useAddToWatchlist();
 
   useEffect(() => {
     setMoviesSearch(title, pageNum);
@@ -33,14 +27,7 @@ function Search({ movies, setMoviesSearch, clearMovies, baseUrl }) {
     <>
       <h2 className="mt-3">{title}</h2>
       <h3 className="mb-5">results</h3>
-      <MovieList
-        movies={movies}
-        baseUrl={baseUrl}
-        basePath={basePath}
-        addToList={handleAdd}
-        addToWatchlist={addToWatchlist}
-      />
-      <ListsModal show={showModal} item={selectedMovie} handleClose={handleClose} />
+      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
 }

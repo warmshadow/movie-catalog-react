@@ -21,7 +21,7 @@ const ListsToSelect = ({ lists, item, handleSelectList }) => (
   </ListGroup>
 );
 
-function ListsModal({ show, handleClose, mediaLists, auth, item, addMovieToList }) {
+function AddToListModal({ show, handleClose, mediaLists, auth, item, addMovieToList }) {
   if (mediaLists && auth.uid) {
     const userMediaLists = mediaLists.filter((list) => list.userId === auth.uid);
 
@@ -64,4 +64,4 @@ const mapDispatchToProps = {
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect([{ collection: 'mediaLists' }])
-)(ListsModal);
+)(AddToListModal);

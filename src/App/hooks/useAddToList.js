@@ -10,7 +10,7 @@ function useAddToList() {
 
   const history = useHistory();
 
-  const handleAdd = (movie) => {
+  const addToList = (movie) => {
     if (auth.uid) {
       setSelectedMovie(movie);
       setShowModal(true);
@@ -19,7 +19,7 @@ function useAddToList() {
 
   const handleClose = () => setShowModal(false);
 
-  return { handleAdd, handleClose, selectedMovie, showModal };
+  return { addToList, handleClose, selectedMovie, showModal };
 }
 
 export default useAddToList;
