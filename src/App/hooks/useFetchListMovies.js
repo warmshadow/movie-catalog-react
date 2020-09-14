@@ -11,12 +11,19 @@ function useFetchListMovies() {
     if (movieIds) {
       dispatch(setMoviesList(movieIds));
     }
-
-    return () => dispatch(clearMovies());
   }, [dispatch, movieIds]);
 
+  useEffect(() => {
+    return () => dispatch(clearMovies());
+  }, [dispatch]);
+
   const fetchOnListChange = (items) => {
-    if (!movieIds || movieIds.length !== items.length) setMovieIds(items);
+    if (
+      !movieIds ||
+      movieIds.length !== items.length ||
+      !movieIds.every((val, idx) => val === items[idx])
+    )
+      setMovieIds(items);
   };
 
   return { fetchOnListChange };
