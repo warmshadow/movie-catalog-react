@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { useLocation } from 'react-router-dom';
+import { useTransition, animated, config } from 'react-spring';
 import PageLinks from './PageLinks';
 import MovieCard from './MovieCard';
 import AddToListModal from './AddToListModal';
@@ -36,28 +37,38 @@ function MovieList({
 
   const listItems = movies.results || movies.items;
 
+  const transition = useTransition(listItems, null, {
+    config: config.gentle,
+    from: { opacity: 0 },
+    enter: { opacity: 1 },
+    leave: { opacity: 0 },
+    keys: listItems.map((item) => item.id),
+  });
+
   return listItems.length ? (
     <>
-      {listItems.map((movie) => {
+      {transition.map(({ item: movie, props, key }) => {
         const item = keysToCamel(movie);
 
         const rating = userRatings && userRatings.items[item.id];
 
         return (
-          <MovieCard
-            item={item}
-            rating={rating && rating}
-            baseUrl={baseUrl}
-            key={item.id}
-            add={() => addToList(item)}
-            remove={removeFromList ? () => removeFromList(item) : null}
-            addToWatchlist={inWatchlist ? null : () => addToWatchlist(item)}
-            setRating={
-              (newRating) => setRating(newRating, item)
-              // eslint-disable-next-line react/jsx-curly-newline
-            }
-            removeRating={() => removeRating(item)}
-          />
+          <animated.div style={props} key={key}>
+            <MovieCard
+              item={item}
+              rating={rating && rating}
+              baseUrl={baseUrl}
+              key={item.id}
+              add={() => addToList(item)}
+              remove={removeFromList ? () => removeFromList(item) : null}
+              addToWatchlist={inWatchlist ? null : () => addToWatchlist(item)}
+              setRating={
+                (newRating) => setRating(newRating, item)
+                // eslint-disable-next-line react/jsx-curly-newline
+              }
+              removeRating={() => removeRating(item)}
+            />
+          </animated.div>
         );
       })}
       {
