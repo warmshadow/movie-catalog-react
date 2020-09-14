@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, isLoaded } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
 import { removeRating as removeRatingAction } from '../actions';
 import { useConfirmationModal } from '../components/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
+import withPaginationContext from '../context/withPaginationContext';
 
-function Ratings({ auth, ratingsList, requesting, movies, baseUrl, removeRating }) {
+function Ratings({ auth, ratingsList, ratingsListInfo, movies, baseUrl, removeRating, context }) {
   const modalContext = useConfirmationModal();
   const { fetchOnListChange } = useFetchListMovies();
 
@@ -24,44 +25,56 @@ function Ratings({ auth, ratingsList, requesting, movies, baseUrl, removeRating 
     }
   };
 
+  // show 'load more' button when movies render, and hide when all loaded
+  useEffect(() => {
+    if (movies.items && movies.items.length / context.page !== 5) {
+      context.hideLoadButton();
+    } else if (movies.items) {
+      context.showLoadButton();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [movies]);
+
   if (!auth.uid) return <Redirect to="/signin" />;
 
-  if (requesting === false) {
-    if (ratingsList) {
-      // redirect if list doesn't belong to current user
-      if (ratingsList.userId !== auth.uid) return <Redirect to="/notfound" />;
+  if (!isLoaded(ratingsListInfo) && !isLoaded(ratingsList)) return <Spinner animation="border" />;
 
-      // order - new items first
-      const orderedItems = [...ratingsList.items].reverse();
-      fetchOnListChange(orderedItems);
+  if (!ratingsListInfo) return <Redirect to="/notfound" />;
 
-      if (movies.isPending) return <Spinner animation="border" />;
+  // redirect if list doesn't belong to current user
+  if (ratingsListInfo.userId !== auth.uid) return <Redirect to="/notfound" />;
 
-      return (
-        <div>
-          <h2 className="mt-3 mb-5">My ratings</h2>
-          <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
-        </div>
-      );
-    }
+  if (ratingsList) {
+    const keys = Object.keys(ratingsList);
+    const ratingsListToFetch = [];
+    keys.forEach((key) => ratingsList[key] && ratingsListToFetch.push(ratingsList[key]));
+    const orderedRatingsListToFetch = ratingsListToFetch.sort(
+      (a, b) => b.createdAt.seconds - a.createdAt.seconds
+    );
 
-    return <Redirect to="/notfound" />;
+    fetchOnListChange(orderedRatingsListToFetch);
+
+    if (movies.isPending) return <Spinner animation="border" />;
+
+    return (
+      <div>
+        <h2 className="mt-3 mb-5">My ratings</h2>
+        <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+      </div>
+    );
   }
-
-  return <Spinner animation="border" />;
+  return <div>No items found</div>;
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
+const mapStateToProps = (state) => {
   const { firestore } = state;
-  const { ratingsLists } = firestore.data;
-  const ratingsList = ratingsLists ? ratingsLists[id] : null;
-  const requesting = firestore.status.requesting.ratingsLists;
+  const { ratingsListInfo } = firestore.data;
+  const { ratingsList } = firestore.data;
 
   return {
     auth: state.firebase.auth,
+    ratingsListInfo,
     ratingsList,
-    requesting,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
   };
@@ -72,7 +85,22 @@ const mapDispatchToProps = {
 };
 
 export default compose(
+  withPaginationContext,
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect(['ratingsLists'])
+  firestoreConnect((props) => [
+    {
+      collection: 'ratingsLists',
+      doc: props.match.params.id,
+      storeAs: 'ratingsListInfo',
+    },
+    {
+      collection: 'ratingsLists',
+      doc: props.match.params.id,
+      subcollections: [{ collection: 'movies' }],
+      orderBy: ['createdAt', 'desc'],
+      limit: 5 * props.context.page,
+      storeAs: 'ratingsList',
+    },
+  ])
 )(Ratings);

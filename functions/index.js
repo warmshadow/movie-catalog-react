@@ -18,7 +18,7 @@ const createInitialLists = (user, list) => {
 };
 
 exports.userJoined = functions.auth.user().onCreate((user) => {
-  const list = { createdAt: admin.firestore.FieldValue.serverTimestamp(), items: [] };
+  const list = { createdAt: admin.firestore.FieldValue.serverTimestamp(), userId: user.uid };
 
   return createInitialLists(user, list);
 });

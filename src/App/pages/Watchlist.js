@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, isLoaded } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
 import { removeMovieFromWatchlist as removeMovieFromWatchlistAction } from '../actions';
 import { useConfirmationModal } from '../components/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
+import withPaginationContext from '../context/withPaginationContext';
 
-function Watchlist({ auth, watchlist, requesting, movies, baseUrl, removeMovieFromWatchlist }) {
+function Watchlist({
+  auth,
+  watchlist,
+  watchlistInfo,
+  movies,
+  baseUrl,
+  removeMovieFromWatchlist,
+  context,
+}) {
   const modalContext = useConfirmationModal();
   const { fetchOnListChange } = useFetchListMovies();
 
@@ -24,44 +33,56 @@ function Watchlist({ auth, watchlist, requesting, movies, baseUrl, removeMovieFr
     }
   };
 
+  // show 'load more' button when movies render, and hide when all loaded
+  useEffect(() => {
+    if (movies.items && movies.items.length / context.page !== 10) {
+      context.hideLoadButton();
+    } else if (movies.items) {
+      context.showLoadButton();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [movies]);
+
   if (!auth.uid) return <Redirect to="/signin" />;
 
-  if (requesting === false) {
-    if (watchlist) {
-      // redirect if list doesn't belong to current user
-      if (watchlist.userId !== auth.uid) return <Redirect to="/notfound" />;
+  if (!isLoaded(watchlistInfo) && !isLoaded(watchlist)) return <Spinner animation="border" />;
 
-      // order - new items first
-      const orderedItems = [...watchlist.items].reverse();
-      fetchOnListChange(orderedItems);
+  if (!watchlistInfo) return <Redirect to="/notfound" />;
 
-      if (movies.isPending) return <Spinner animation="border" />;
+  // redirect if list doesn't belong to current user
+  if (watchlistInfo.userId !== auth.uid) return <Redirect to="/notfound" />;
 
-      return (
-        <div>
-          <h2 className="mt-3 mb-5">My watchlist</h2>
-          <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
-        </div>
-      );
-    }
+  if (watchlist) {
+    const keys = Object.keys(watchlist);
+    const watchlistToFetch = [];
+    keys.forEach((key) => watchlist[key] && watchlistToFetch.push(watchlist[key]));
+    const orderedWatchlistToFetch = watchlistToFetch.sort(
+      (a, b) => b.createdAt.seconds - a.createdAt.seconds
+    );
 
-    return <Redirect to="/notfound" />;
+    fetchOnListChange(orderedWatchlistToFetch);
+
+    if (movies.isPending) return <Spinner animation="border" />;
+
+    return (
+      <div>
+        <h2 className="mt-3 mb-5">My watchlist</h2>
+        <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+      </div>
+    );
   }
-
-  return <Spinner animation="border" />;
+  return <div>No items found</div>;
 }
 
-const mapStateToProps = (state, ownProps) => {
-  const { id } = ownProps.match.params;
+const mapStateToProps = (state) => {
   const { firestore } = state;
-  const { watchlists } = firestore.data;
-  const watchlist = watchlists ? watchlists[id] : null;
-  const requesting = firestore.status.requesting.watchlists;
+  const { watchlistInfo } = firestore.data;
+  const { watchlist } = firestore.data;
 
   return {
     auth: state.firebase.auth,
+    watchlistInfo,
     watchlist,
-    requesting,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
   };
@@ -72,7 +93,18 @@ const mapDispatchToProps = {
 };
 
 export default compose(
+  withPaginationContext,
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect(['watchlists'])
+  firestoreConnect((props) => [
+    { collection: 'watchlists', doc: props.match.params.id, storeAs: 'watchlistInfo' },
+    {
+      collection: 'watchlists',
+      doc: props.match.params.id,
+      subcollections: [{ collection: 'movies' }],
+      orderBy: ['createdAt', 'desc'],
+      limit: 10 * props.context.page,
+      storeAs: 'watchlist',
+    },
+  ])
 )(Watchlist);

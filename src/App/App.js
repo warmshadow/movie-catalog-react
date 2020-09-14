@@ -19,6 +19,7 @@ import Error from './pages/Error';
 import NotFound from './pages/NotFound';
 import './App.css';
 import { ConfirmationModalContextProvider } from './components/ConfirmationModalContext';
+import { PaginationContextProvider } from './context/PaginationContext';
 
 function App({ config, setConfig, error }) {
   useEffect(() => {
@@ -75,12 +76,16 @@ function App({ config, setConfig, error }) {
         </Route>
         <Route exact path="/ratings/:id">
           <ConfirmationModalContextProvider>
-            <Ratings />
+            <PaginationContextProvider>
+              <Ratings />
+            </PaginationContextProvider>
           </ConfirmationModalContextProvider>
         </Route>
         <Route exact path="/watchlist/:id">
           <ConfirmationModalContextProvider>
-            <Watchlist />
+            <PaginationContextProvider>
+              <Watchlist />
+            </PaginationContextProvider>
           </ConfirmationModalContextProvider>
         </Route>
         <Route exact path="/signin">

@@ -157,9 +157,9 @@ const addMovieToWatchlist = (movie) => async (dispatch, getState, { getFirestore
     await firestore
       .collection('watchlists')
       .doc(uid)
-      .update({
-        items: firestore.FieldValue.arrayUnion({ id }),
-      });
+      .collection('movies')
+      .doc(`${id}`)
+      .set({ id, createdAt: firestore.FieldValue.serverTimestamp() });
     dispatch({ type: 'ADD_MOVIE_WATCHLIST_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
@@ -171,12 +171,7 @@ const removeMovieFromWatchlist = (movie) => async (dispatch, getState, { getFire
   try {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
-    await firestore
-      .collection('watchlists')
-      .doc(uid)
-      .update({
-        items: firestore.FieldValue.arrayRemove({ id }),
-      });
+    await firestore.collection('watchlists').doc(uid).collection('movies').doc(`${id}`).delete();
     dispatch({ type: 'REMOVE_MOVIE_WATCHLIST_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
@@ -195,9 +190,9 @@ const setRating = (rating, item) => async (dispatch, getState, { getFirestore })
     await firestore
       .collection('ratingsLists')
       .doc(uid)
-      .update({
-        items: firestore.FieldValue.arrayUnion({ id }),
-      });
+      .collection('movies')
+      .doc(`${id}`)
+      .set({ id, createdAt: firestore.FieldValue.serverTimestamp() });
     dispatch({ type: 'SET_RATING_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
@@ -209,12 +204,7 @@ const removeRating = (item) => async (dispatch, getState, { getFirestore }) => {
   try {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
-    await firestore
-      .collection('ratingsLists')
-      .doc(uid)
-      .update({
-        items: firestore.FieldValue.arrayRemove({ id }),
-      });
+    await firestore.collection('ratingsLists').doc(uid).collection('movies').doc(`${id}`).delete();
     await firestore
       .collection('usersRatings')
       .doc(uid)
