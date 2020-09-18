@@ -9,7 +9,7 @@ import MovieList from '../components/MovieList';
 import { removeMovieFromList as removeMovieFromListAction } from '../actions';
 import { useConfirmationModal } from '../context/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
-import withPaginationContext from '../context/withPaginationContext';
+import { usePagination } from '../context/PaginationContext';
 
 function List({
   auth,
@@ -19,10 +19,10 @@ function List({
   baseUrl,
   listId,
   removeMovieFromList,
-  context,
   requested,
 }) {
   const modalContext = useConfirmationModal();
+  const paginationContext = usePagination();
   const { fetchOnListChange } = useFetchListMovies();
 
   const removeFromList = async (item) => {
@@ -34,7 +34,7 @@ function List({
     if (result) removeMovieFromList(listId, item);
   };
 
-  const { hideLoadButton, showLoadButton, page } = context;
+  const { hideLoadButton, showLoadButton, page } = paginationContext;
 
   // show 'load more' button when movies render, and hide when all loaded
   useEffect(() => {
@@ -97,7 +97,6 @@ const mapDispatchToProps = {
 };
 
 export default compose(
-  withPaginationContext,
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect((props) => [
