@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
@@ -12,7 +12,7 @@ import {
   deleteMediaList as deleteMediaListAction,
 } from '../actions';
 import CreateList from '../components/CreateList';
-import { useConfirmationModal } from '../components/ConfirmationModalContext';
+import { useConfirmationModal } from '../context/ConfirmationModalContext';
 
 const Options = ({ deleteMediaList }) => {
   return (
@@ -24,7 +24,7 @@ const Options = ({ deleteMediaList }) => {
   );
 };
 
-function Lists({ auth, mediaLists, createMediaList, deleteMediaList, requestingOrder }) {
+function Lists({ auth, mediaLists, createMediaList, deleteMediaList }) {
   const modalContext = useConfirmationModal();
 
   const createList = async (list) => {
@@ -47,27 +47,19 @@ function Lists({ auth, mediaLists, createMediaList, deleteMediaList, requestingO
 
   if (!auth.uid) return <Redirect to="/signin" />;
 
-  if (mediaLists) {
-    // CHANGE THIS
-    if (requestingOrder) return <Spinner animation="border" />;
-    // ////
+  if (!isLoaded(mediaLists)) return <Spinner animation="border" />;
 
-    const userMediaLists = mediaLists.filter((list) => list.userId === auth.uid);
-
-    if (userMediaLists.length === 0)
-      return (
-        <>
-          <h3 className="mb-4">No lists found</h3>
-          <CreateList createList={createList} />
-        </>
-      );
-
-    return (
-      <div>
-        <h2 className="font-italic mb-4">My lists:</h2>
+  return (
+    <>
+      <h2 className="font-italic mb-4">My lists:</h2>
+      {!isEmpty(mediaLists) ? (
         <ListGroup className="mb-4">
-          {userMediaLists.map((list) => {
+          {mediaLists.map((list) => {
             const { id, name, createdAt } = list;
+
+            // wait for timestamp to be set after creating new list
+            if (!createdAt) return <Spinner animation="border" />;
+
             const creationDate = moment(createdAt.toDate()).format('MMM D, YYYY');
 
             return (
@@ -85,19 +77,18 @@ function Lists({ auth, mediaLists, createMediaList, deleteMediaList, requestingO
             );
           })}
         </ListGroup>
-        <CreateList createList={createList} />
-      </div>
-    );
-  }
-  return <Spinner animation="border" />;
+      ) : (
+        <h3 className="mb-4">No lists found</h3>
+      )}
+      <CreateList createList={createList} />
+    </>
+  );
 }
 
 const mapStateToProps = (state) => {
   const { mediaLists } = state.firestore.ordered;
-  const requestingOrder = state.firestore.status.requesting['mediaLists?orderBy=createdAt:desc'];
   return {
     mediaLists,
-    requestingOrder,
     auth: state.firebase.auth,
   };
 };
@@ -109,5 +100,11 @@ const mapDispatchToProps = {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'mediaLists', orderBy: ['createdAt', 'desc'] }])
+  firestoreConnect((props) => [
+    {
+      collection: 'mediaLists',
+      where: ['userId', '==', props.auth.uid],
+      orderBy: ['createdAt'],
+    },
+  ])
 )(Lists);

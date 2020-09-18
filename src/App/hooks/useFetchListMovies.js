@@ -18,12 +18,7 @@ function useFetchListMovies() {
   }, [dispatch]);
 
   const fetchOnListChange = (items) => {
-    if (
-      !movieIds ||
-      movieIds.length !== items.length ||
-      !movieIds.every((val, idx) => val === items[idx])
-    )
-      setMovieIds(items);
+    if (!movieIds || movieIds.length !== items.length) setMovieIds(items);
   };
 
   return { fetchOnListChange };

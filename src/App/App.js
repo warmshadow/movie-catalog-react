@@ -18,7 +18,7 @@ import SignUp from './auth/SignUp';
 import Error from './pages/Error';
 import NotFound from './pages/NotFound';
 import './App.css';
-import { ConfirmationModalContextProvider } from './components/ConfirmationModalContext';
+import { ConfirmationModalContextProvider } from './context/ConfirmationModalContext';
 import { PaginationContextProvider } from './context/PaginationContext';
 
 function App({ config, setConfig, error }) {
@@ -71,7 +71,9 @@ function App({ config, setConfig, error }) {
         </Route>
         <Route exact path="/lists/:id">
           <ConfirmationModalContextProvider>
-            <List />
+            <PaginationContextProvider>
+              <List />
+            </PaginationContextProvider>
           </ConfirmationModalContextProvider>
         </Route>
         <Route exact path="/ratings/:id">

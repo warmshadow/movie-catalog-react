@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { firestoreConnect } from 'react-redux-firebase';
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
 import { removeMovieFromList as removeMovieFromListAction } from '../actions';
-import { useConfirmationModal } from '../components/ConfirmationModalContext';
+import { useConfirmationModal } from '../context/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
+import withPaginationContext from '../context/withPaginationContext';
 
-function List({ auth, mediaList, requesting, movies, baseUrl, listId, removeMovieFromList }) {
+function List({
+  auth,
+  mediaList,
+  mediaListInfo,
+  movies,
+  baseUrl,
+  listId,
+  removeMovieFromList,
+  context,
+  requested,
+}) {
   const modalContext = useConfirmationModal();
   const { fetchOnListChange } = useFetchListMovies();
 
@@ -22,47 +33,61 @@ function List({ auth, mediaList, requesting, movies, baseUrl, listId, removeMovi
     if (result) removeMovieFromList(listId, item);
   };
 
+  const { hideLoadButton, showLoadButton, page } = context;
+
+  // show 'load more' button when movies render, and hide when all loaded
+  useEffect(() => {
+    if (movies.results && movies.results.length / page !== 10) {
+      hideLoadButton();
+    } else if (movies.results) {
+      showLoadButton();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [movies]);
+
   if (!auth.uid) return <Redirect to="/signin" />;
 
-  if (requesting === false) {
-    if (mediaList) {
-      // redirect if list doesn't belong to current user
-      if (mediaList.userId !== auth.uid) return <Redirect to="/notfound" />;
+  if (!isLoaded(mediaListInfo, mediaList)) return <Spinner animation="border" />;
 
-      // order - new items first
-      const orderedItems = [...mediaList.items].reverse();
-      fetchOnListChange(orderedItems);
+  if (isEmpty(mediaListInfo)) return <Redirect to="/notfound" />;
 
-      if (movies.isPending) return <Spinner animation="border" />;
+  // redirect if list doesn't belong to current user
+  if (mediaListInfo.userId !== auth.uid) return <Redirect to="/notfound" />;
 
-      return (
-        <div>
-          <h2 className="mt-3 mb-5">{mediaList.name}</h2>
-          <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
-        </div>
-      );
-    }
+  // when switching to this route pause until request is finished to load all new data from db at once
+  if (!requested && page === 1) return <Spinner animation="border" />;
 
-    return <Redirect to="/notfound" />;
+  if (!isEmpty(mediaList)) {
+    fetchOnListChange(mediaList);
+
+    if (movies.isPending) return <Spinner animation="border" />;
+
+    return (
+      <div>
+        <h2 className="mt-3 mb-5">{mediaListInfo.name}</h2>
+        <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+      </div>
+    );
   }
-
-  return <Spinner animation="border" />;
+  return <div>No items found</div>;
 }
 
 const mapStateToProps = (state, ownProps) => {
   const { id } = ownProps.match.params;
   const { firestore } = state;
-  const { mediaLists } = firestore.data;
-  const mediaList = mediaLists ? mediaLists[id] : null;
-  const requesting = firestore.status.requesting.mediaLists;
+  const { mediaListInfo } = firestore.data;
+  const { mediaList } = firestore.ordered;
+  const { mediaListInfo: reqMediaListInfo, mediaList: reqMediaList } = firestore.status.requested;
+  const requested = !!(reqMediaListInfo && reqMediaList);
 
   return {
     auth: state.firebase.auth,
+    mediaListInfo,
     mediaList,
-    requesting,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
     listId: id,
+    requested,
   };
 };
 
@@ -71,7 +96,18 @@ const mapDispatchToProps = {
 };
 
 export default compose(
+  withPaginationContext,
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect(['mediaLists'])
+  firestoreConnect((props) => [
+    { collection: 'mediaLists', doc: props.match.params.id, storeAs: 'mediaListInfo' },
+    {
+      collection: 'mediaLists',
+      doc: props.match.params.id,
+      subcollections: [{ collection: 'movies' }],
+      orderBy: ['createdAt', 'desc'],
+      limit: 10 * props.context.page,
+      storeAs: 'mediaList',
+    },
+  ])
 )(List);

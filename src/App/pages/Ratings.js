@@ -1,16 +1,25 @@
 import React, { useEffect } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { firestoreConnect, isLoaded } from 'react-redux-firebase';
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
 import { removeRating as removeRatingAction } from '../actions';
-import { useConfirmationModal } from '../components/ConfirmationModalContext';
+import { useConfirmationModal } from '../context/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
 import withPaginationContext from '../context/withPaginationContext';
 
-function Ratings({ auth, ratingsList, ratingsListInfo, movies, baseUrl, removeRating, context }) {
+function Ratings({
+  auth,
+  ratingsList,
+  ratingsListInfo,
+  movies,
+  baseUrl,
+  removeRating,
+  context,
+  requested,
+}) {
   const modalContext = useConfirmationModal();
   const { fetchOnListChange } = useFetchListMovies();
 
@@ -25,34 +34,32 @@ function Ratings({ auth, ratingsList, ratingsListInfo, movies, baseUrl, removeRa
     }
   };
 
+  const { hideLoadButton, showLoadButton, page } = context;
+
   // show 'load more' button when movies render, and hide when all loaded
   useEffect(() => {
-    if (movies.items && movies.items.length / context.page !== 5) {
-      context.hideLoadButton();
-    } else if (movies.items) {
-      context.showLoadButton();
+    if (movies.results && movies.results.length / page !== 10) {
+      hideLoadButton();
+    } else if (movies.results) {
+      showLoadButton();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movies]);
 
   if (!auth.uid) return <Redirect to="/signin" />;
 
-  if (!isLoaded(ratingsListInfo) && !isLoaded(ratingsList)) return <Spinner animation="border" />;
+  if (!isLoaded(ratingsListInfo, ratingsList)) return <Spinner animation="border" />;
 
-  if (!ratingsListInfo) return <Redirect to="/notfound" />;
+  if (isEmpty(ratingsListInfo)) return <Redirect to="/notfound" />;
 
   // redirect if list doesn't belong to current user
   if (ratingsListInfo.userId !== auth.uid) return <Redirect to="/notfound" />;
 
-  if (ratingsList) {
-    const keys = Object.keys(ratingsList);
-    const ratingsListToFetch = [];
-    keys.forEach((key) => ratingsList[key] && ratingsListToFetch.push(ratingsList[key]));
-    const orderedRatingsListToFetch = ratingsListToFetch.sort(
-      (a, b) => b.createdAt.seconds - a.createdAt.seconds
-    );
+  // when switching to this route pause until request is finished to load all new data from db at once
+  if (!requested && page === 1) return <Spinner animation="border" />;
 
-    fetchOnListChange(orderedRatingsListToFetch);
+  if (!isEmpty(ratingsList)) {
+    fetchOnListChange(ratingsList);
 
     if (movies.isPending) return <Spinner animation="border" />;
 
@@ -69,7 +76,12 @@ function Ratings({ auth, ratingsList, ratingsListInfo, movies, baseUrl, removeRa
 const mapStateToProps = (state) => {
   const { firestore } = state;
   const { ratingsListInfo } = firestore.data;
-  const { ratingsList } = firestore.data;
+  const { ratingsList } = firestore.ordered;
+  const {
+    ratingsListInfo: reqRatingsListInfo,
+    ratingsList: reqRatingsList,
+  } = firestore.status.requested;
+  const requested = !!(reqRatingsListInfo && reqRatingsList);
 
   return {
     auth: state.firebase.auth,
@@ -77,6 +89,7 @@ const mapStateToProps = (state) => {
     ratingsList,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
+    requested,
   };
 };
 
@@ -99,7 +112,7 @@ export default compose(
       doc: props.match.params.id,
       subcollections: [{ collection: 'movies' }],
       orderBy: ['createdAt', 'desc'],
-      limit: 5 * props.context.page,
+      limit: 10 * props.context.page,
       storeAs: 'ratingsList',
     },
   ])

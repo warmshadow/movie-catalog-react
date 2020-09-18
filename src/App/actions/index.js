@@ -76,7 +76,7 @@ const setMoviesList = (movieIds) => async (dispatch) => {
   try {
     const movies = {};
     const fetchMovies = movieIds.map(fetchMovie);
-    movies.items = await Promise.all(fetchMovies);
+    movies.results = await Promise.all(fetchMovies);
 
     dispatch({ type: 'SET_MOVIES', payload: movies });
   } catch (err) {
@@ -97,8 +97,7 @@ const createMediaList = (list) => async (dispatch, getState, { getFirestore }) =
     await firestore.collection('mediaLists').add({
       ...list,
       userId,
-      items: [],
-      createdAt: new Date(),
+      createdAt: firestore.FieldValue.serverTimestamp(),
     });
     dispatch({ type: 'CREATE_MEDIA_LIST_SUCCESS' });
   } catch (err) {
@@ -124,9 +123,9 @@ const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirest
     await firestore
       .collection('mediaLists')
       .doc(listId)
-      .update({
-        items: firestore.FieldValue.arrayUnion({ id }),
-      });
+      .collection('movies')
+      .doc(`${id}`)
+      .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
     dispatch({ type: 'ADD_MOVIE_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
@@ -137,12 +136,7 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   const { id } = movie;
   try {
     const firestore = getFirestore();
-    await firestore
-      .collection('mediaLists')
-      .doc(listId)
-      .update({
-        items: firestore.FieldValue.arrayRemove({ id }),
-      });
+    await firestore.collection('mediaLists').doc(listId).collection('movies').doc(`${id}`).delete();
     dispatch({ type: 'REMOVE_MOVIE_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
@@ -159,7 +153,7 @@ const addMovieToWatchlist = (movie) => async (dispatch, getState, { getFirestore
       .doc(uid)
       .collection('movies')
       .doc(`${id}`)
-      .set({ id, createdAt: firestore.FieldValue.serverTimestamp() });
+      .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
     dispatch({ type: 'ADD_MOVIE_WATCHLIST_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
@@ -178,37 +172,34 @@ const removeMovieFromWatchlist = (movie) => async (dispatch, getState, { getFire
   }
 };
 
-const setRating = (rating, item) => async (dispatch, getState, { getFirestore }) => {
-  const { id } = item;
+const setRating = (rating, movie) => async (dispatch, getState, { getFirestore }) => {
+  const { id } = movie;
   try {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
     await firestore
       .collection('usersRatings')
-      .doc(uid)
-      .update({ [`items.${id}`]: rating });
+      .doc(`${id}_${uid}`)
+      .set({ movieId: id, userId: uid, rating, createdAt: firestore.FieldValue.serverTimestamp() });
     await firestore
       .collection('ratingsLists')
       .doc(uid)
       .collection('movies')
       .doc(`${id}`)
-      .set({ id, createdAt: firestore.FieldValue.serverTimestamp() });
+      .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
     dispatch({ type: 'SET_RATING_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });
   }
 };
 
-const removeRating = (item) => async (dispatch, getState, { getFirestore }) => {
-  const { id } = item;
+const removeRating = (movie) => async (dispatch, getState, { getFirestore }) => {
+  const { id } = movie;
   try {
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
     await firestore.collection('ratingsLists').doc(uid).collection('movies').doc(`${id}`).delete();
-    await firestore
-      .collection('usersRatings')
-      .doc(uid)
-      .update({ [`items.${id}`]: firestore.FieldValue.delete() });
+    await firestore.collection('usersRatings').doc(`${id}_${uid}`).delete();
     dispatch({ type: 'REMOVE_RATING_SUCCESS' });
   } catch (err) {
     dispatch({ type: 'SET_ERROR', payload: err });

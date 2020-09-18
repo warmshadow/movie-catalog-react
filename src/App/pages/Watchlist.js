@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { firestoreConnect, isLoaded } from 'react-redux-firebase';
+import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
 import MovieList from '../components/MovieList';
 import { removeMovieFromWatchlist as removeMovieFromWatchlistAction } from '../actions';
-import { useConfirmationModal } from '../components/ConfirmationModalContext';
+import { useConfirmationModal } from '../context/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
 import withPaginationContext from '../context/withPaginationContext';
+
+console.log(isLoaded);
+console.log(isEmpty);
 
 function Watchlist({
   auth,
@@ -18,6 +21,7 @@ function Watchlist({
   baseUrl,
   removeMovieFromWatchlist,
   context,
+  requested,
 }) {
   const modalContext = useConfirmationModal();
   const { fetchOnListChange } = useFetchListMovies();
@@ -33,41 +37,44 @@ function Watchlist({
     }
   };
 
+  const { hideLoadButton, showLoadButton, page } = context;
+
   // show 'load more' button when movies render, and hide when all loaded
   useEffect(() => {
-    if (movies.items && movies.items.length / context.page !== 10) {
-      context.hideLoadButton();
-    } else if (movies.items) {
-      context.showLoadButton();
+    if (movies.results && movies.results.length / page !== 10) {
+      hideLoadButton();
+    } else if (movies.results) {
+      showLoadButton();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [movies]);
 
   if (!auth.uid) return <Redirect to="/signin" />;
 
-  if (!isLoaded(watchlistInfo) && !isLoaded(watchlist)) return <Spinner animation="border" />;
+  if (!isLoaded(watchlistInfo, watchlist)) return <Spinner animation="border" />;
 
-  if (!watchlistInfo) return <Redirect to="/notfound" />;
+  if (isEmpty(watchlistInfo)) return <Redirect to="/notfound" />;
 
   // redirect if list doesn't belong to current user
   if (watchlistInfo.userId !== auth.uid) return <Redirect to="/notfound" />;
 
-  if (watchlist) {
-    const keys = Object.keys(watchlist);
-    const watchlistToFetch = [];
-    keys.forEach((key) => watchlist[key] && watchlistToFetch.push(watchlist[key]));
-    const orderedWatchlistToFetch = watchlistToFetch.sort(
-      (a, b) => b.createdAt.seconds - a.createdAt.seconds
-    );
+  // when switching to this route pause until request is finished to load all new data from db at once
+  if (!requested && page === 1) return <Spinner animation="border" />;
 
-    fetchOnListChange(orderedWatchlistToFetch);
+  if (!isEmpty(watchlist)) {
+    fetchOnListChange(watchlist);
 
-    if (movies.isPending) return <Spinner animation="border" />;
+    // if (movies.isPending) return <Spinner animation="border" />;
 
     return (
       <div>
         <h2 className="mt-3 mb-5">My watchlist</h2>
-        <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+        {movies.isPending ? (
+          <Spinner animation="border" />
+        ) : (
+          <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+        )}
+        {/* <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} /> */}
       </div>
     );
   }
@@ -77,7 +84,9 @@ function Watchlist({
 const mapStateToProps = (state) => {
   const { firestore } = state;
   const { watchlistInfo } = firestore.data;
-  const { watchlist } = firestore.data;
+  const { watchlist } = firestore.ordered;
+  const { watchlistInfo: reqWatchlistInfo, watchlist: reqWatchlist } = firestore.status.requested;
+  const requested = !!(reqWatchlistInfo && reqWatchlist);
 
   return {
     auth: state.firebase.auth,
@@ -85,6 +94,7 @@ const mapStateToProps = (state) => {
     watchlist,
     movies: state.movies,
     baseUrl: state.config.images.secure_base_url,
+    requested,
   };
 };
 

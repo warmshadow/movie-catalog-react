@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { firestoreConnect } from 'react-redux-firebase';
 import { useLocation } from 'react-router-dom';
-import { useTransition, animated, config } from 'react-spring';
 import PageLinks from './PageLinks';
 import MovieCard from './MovieCard';
 import AddToListModal from './AddToListModal';
@@ -27,6 +26,7 @@ function MovieList({
   userRatings,
   setRating,
   removeRating,
+  auth,
 }) {
   const { addToList, handleClose, selectedMovie, showModal } = useAddToList();
   const addToWatchlist = useAddToWatchlist();
@@ -35,48 +35,41 @@ function MovieList({
   const location = useLocation();
   const inWatchlist = location.pathname.split('/')[1] === 'watchlist';
 
-  const listItems = movies.results || movies.items;
+  // check if inside watchlist, list, or ratings, for conditional PageLinks render
+  const insideList = ['watchlist', 'lists', 'ratings'].some(
+    (route) => route === location.pathname.split('/')[1]
+  );
 
-  const transition = useTransition(listItems, null, {
-    config: config.gentle,
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-    keys: listItems.map((item) => item.id),
-  });
+  const listItems = movies.results;
 
   return listItems.length ? (
     <>
-      {transition.map(({ item: movie, props, key }) => {
+      {listItems.map((movie) => {
         const item = keysToCamel(movie);
 
-        const rating = userRatings && userRatings.items[item.id];
+        const ratingDoc = userRatings && userRatings[`${item.id}_${auth.uid}`];
+        const rating = ratingDoc && ratingDoc.rating;
 
         return (
-          <animated.div style={props} key={key}>
-            <MovieCard
-              item={item}
-              rating={rating && rating}
-              baseUrl={baseUrl}
-              key={item.id}
-              add={() => addToList(item)}
-              remove={removeFromList ? () => removeFromList(item) : null}
-              addToWatchlist={inWatchlist ? null : () => addToWatchlist(item)}
-              setRating={
-                (newRating) => setRating(newRating, item)
-                // eslint-disable-next-line react/jsx-curly-newline
-              }
-              removeRating={() => removeRating(item)}
-            />
-          </animated.div>
+          <MovieCard
+            item={item}
+            rating={rating && rating}
+            baseUrl={baseUrl}
+            key={item.id}
+            add={() => addToList(item)}
+            remove={removeFromList ? () => removeFromList(item) : null}
+            addToWatchlist={inWatchlist ? null : () => addToWatchlist(item)}
+            setRating={
+              (newRating) => setRating(newRating, item)
+              // eslint-disable-next-line react/jsx-curly-newline
+            }
+            removeRating={() => removeRating(item)}
+          />
         );
       })}
-      {
-        // render if it's movies from api (with results property)
-        movies.results && (
-          <PageLinks page={movies.page} totalPages={movies.total_pages} basePath={basePath} />
-        )
-      }
+      {!insideList && (
+        <PageLinks page={movies.page} totalPages={movies.total_pages} basePath={basePath} />
+      )}
       <AddToListModal show={showModal} item={selectedMovie} handleClose={handleClose} />
     </>
   ) : (
@@ -88,10 +81,10 @@ const mapStateToProps = (state) => {
   const { auth } = state.firebase;
   const { firestore } = state;
   const { usersRatings } = firestore.data;
-  const userRatings = usersRatings ? usersRatings[auth.uid] : null;
 
   return {
-    userRatings,
+    auth,
+    userRatings: usersRatings,
   };
 };
 
@@ -102,5 +95,7 @@ const mapDispatchToProps = {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'usersRatings' }])
+  firestoreConnect((props) => [
+    { collection: 'usersRatings', where: ['userId', '==', props.auth.uid] },
+  ])
 )(MovieList);
