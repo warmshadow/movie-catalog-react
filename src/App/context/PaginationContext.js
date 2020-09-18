@@ -6,6 +6,16 @@ export const PaginationContext = createContext({});
 
 export const usePagination = () => useContext(PaginationContext);
 
+export function withPaginationContext(Component) {
+  return function WithPagination() {
+    return (
+      <PaginationContext.Consumer>
+        {(value) => <Component paginationContext={value} />}
+      </PaginationContext.Consumer>
+    );
+  };
+}
+
 export const PaginationContextProvider = ({ children }) => {
   const [show, setShow] = useState(false);
   const [page, setPage] = useState(1);

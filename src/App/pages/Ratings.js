@@ -9,11 +9,19 @@ import MovieList from '../components/MovieList';
 import { removeRating as removeRatingAction } from '../actions';
 import { useConfirmationModal } from '../context/ConfirmationModalContext';
 import useFetchListMovies from '../hooks/useFetchListMovies';
-import { usePagination } from '../context/PaginationContext';
+import { withPaginationContext } from '../context/PaginationContext';
 
-function Ratings({ auth, ratingsList, ratingsListInfo, movies, baseUrl, removeRating, requested }) {
+function Ratings({
+  auth,
+  ratingsList,
+  ratingsListInfo,
+  movies,
+  baseUrl,
+  removeRating,
+  requested,
+  paginationContext,
+}) {
   const modalContext = useConfirmationModal();
-  const paginationContext = usePagination();
   const { fetchOnListChange } = useFetchListMovies();
 
   const removeFromList = async (item) => {
@@ -91,6 +99,7 @@ const mapDispatchToProps = {
 };
 
 export default compose(
+  withPaginationContext,
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect((props) => [
@@ -104,7 +113,7 @@ export default compose(
       doc: props.match.params.id,
       subcollections: [{ collection: 'movies' }],
       orderBy: ['createdAt', 'desc'],
-      limit: 10 * props.context.page,
+      limit: 10 * props.paginationContext.page,
       storeAs: 'ratingsList',
     },
   ])
