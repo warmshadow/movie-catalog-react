@@ -1,13 +1,14 @@
+import * as types from './types';
 import tmdb from '../api/tmdb';
 
 const setConfig = () => async (dispatch) => {
   try {
     const res = await tmdb.get('/configuration');
-    dispatch({ type: 'SET_CONFIG', payload: res.data });
+    dispatch({ type: types.SET_CONFIG, payload: res.data });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+    dispatch({ type: types.SET_ERROR, payload: err.response.data });
     // reset isPending to false so App component renders routes
-    dispatch({ type: 'RESET_CONFIG_ON_ERROR' });
+    dispatch({ type: types.RESET_CONFIG_ON_ERROR });
   }
 };
 
@@ -16,9 +17,9 @@ const setMoviesCategory = (category, pageNum) => async (dispatch) => {
     const res = await tmdb.get(`/movie/${category}`, {
       params: { page: pageNum },
     });
-    dispatch({ type: 'SET_MOVIES', payload: res.data });
+    dispatch({ type: types.SET_MOVIES, payload: res.data });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+    dispatch({ type: types.SET_ERROR, payload: err.response.data });
   }
 };
 
@@ -30,9 +31,9 @@ const setMoviesSearch = (title, pageNum) => async (dispatch) => {
         page: pageNum,
       },
     });
-    dispatch({ type: 'SET_MOVIES', payload: res.data });
+    dispatch({ type: types.SET_MOVIES, payload: res.data });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+    dispatch({ type: types.SET_ERROR, payload: err.response.data });
   }
 };
 
@@ -43,15 +44,15 @@ const setMovie = (id) => async (dispatch) => {
         append_to_response: 'credits',
       },
     });
-    dispatch({ type: 'SET_MOVIE', payload: res.data });
+    dispatch({ type: types.SET_MOVIE, payload: res.data });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+    dispatch({ type: types.SET_ERROR, payload: err.response.data });
   }
 };
 
 const clearMovie = () => {
   return {
-    type: 'SET_MOVIE_PENDING',
+    type: types.SET_MOVIE_PENDING,
   };
 };
 
@@ -62,9 +63,9 @@ const setMoviesSimilar = (id, pageNum) => async (dispatch) => {
         page: pageNum,
       },
     });
-    dispatch({ type: 'SET_MOVIES', payload: res.data });
+    dispatch({ type: types.SET_MOVIES, payload: res.data });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+    dispatch({ type: types.SET_ERROR, payload: err.response.data });
   }
 };
 
@@ -78,15 +79,15 @@ const setMoviesList = (movieIds) => async (dispatch) => {
     const fetchMovies = movieIds.map(fetchMovie);
     movies.results = await Promise.all(fetchMovies);
 
-    dispatch({ type: 'SET_MOVIES', payload: movies });
+    dispatch({ type: types.SET_MOVIES, payload: movies });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err.response.data });
+    dispatch({ type: types.SET_ERROR, payload: err.response.data });
   }
 };
 
 const clearMovies = () => {
   return {
-    type: 'SET_MOVIES_PENDING',
+    type: types.SET_MOVIES_PENDING,
   };
 };
 
@@ -99,9 +100,9 @@ const createMediaList = (list) => async (dispatch, getState, { getFirestore }) =
       userId,
       createdAt: firestore.FieldValue.serverTimestamp(),
     });
-    dispatch({ type: 'CREATE_MEDIA_LIST_SUCCESS' });
+    dispatch({ type: types.CREATE_MEDIA_LIST_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
@@ -110,9 +111,9 @@ const deleteMediaList = (list) => async (dispatch, getState, { getFirestore }) =
     const firestore = getFirestore();
     await firestore.collection('mediaLists').doc(list.id).delete();
 
-    dispatch({ type: 'DELETE_MEDIA_LIST_SUCCESS' });
+    dispatch({ type: types.DELETE_MEDIA_LIST_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
@@ -126,9 +127,9 @@ const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirest
       .collection('movies')
       .doc(`${id}`)
       .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
-    dispatch({ type: 'ADD_MOVIE_SUCCESS' });
+    dispatch({ type: types.ADD_MOVIE_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
@@ -137,9 +138,9 @@ const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getF
   try {
     const firestore = getFirestore();
     await firestore.collection('mediaLists').doc(listId).collection('movies').doc(`${id}`).delete();
-    dispatch({ type: 'REMOVE_MOVIE_SUCCESS' });
+    dispatch({ type: types.REMOVE_MOVIE_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
@@ -154,9 +155,9 @@ const addMovieToWatchlist = (movie) => async (dispatch, getState, { getFirestore
       .collection('movies')
       .doc(`${id}`)
       .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
-    dispatch({ type: 'ADD_MOVIE_WATCHLIST_SUCCESS' });
+    dispatch({ type: types.ADD_MOVIE_WATCHLIST_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
@@ -166,9 +167,9 @@ const removeMovieFromWatchlist = (movie) => async (dispatch, getState, { getFire
     const firestore = getFirestore();
     const { uid } = getState().firebase.auth;
     await firestore.collection('watchlists').doc(uid).collection('movies').doc(`${id}`).delete();
-    dispatch({ type: 'REMOVE_MOVIE_WATCHLIST_SUCCESS' });
+    dispatch({ type: types.REMOVE_MOVIE_WATCHLIST_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
@@ -187,9 +188,9 @@ const setRating = (rating, movie) => async (dispatch, getState, { getFirestore }
       .collection('movies')
       .doc(`${id}`)
       .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
-    dispatch({ type: 'SET_RATING_SUCCESS' });
+    dispatch({ type: types.SET_RATING_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
@@ -200,15 +201,15 @@ const removeRating = (movie) => async (dispatch, getState, { getFirestore }) => 
     const { uid } = getState().firebase.auth;
     await firestore.collection('ratingsLists').doc(uid).collection('movies').doc(`${id}`).delete();
     await firestore.collection('usersRatings').doc(`${id}_${uid}`).delete();
-    dispatch({ type: 'REMOVE_RATING_SUCCESS' });
+    dispatch({ type: types.REMOVE_RATING_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SET_ERROR', payload: err });
+    dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
 const clearError = () => {
   return {
-    type: 'CLEAR_ERROR',
+    type: types.CLEAR_ERROR,
   };
 };
 

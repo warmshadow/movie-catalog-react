@@ -1,11 +1,13 @@
+import * as types from './types';
+
 export const signIn = (credentials) => async (dispatch, getState, { getFirebase }) => {
   const firebase = getFirebase();
 
   try {
     await firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password);
-    dispatch({ type: 'SIGNIN_SUCCESS' });
+    dispatch({ type: types.SIGNIN_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SIGNIN_ERROR', err });
+    dispatch({ type: types.SIGNIN_ERROR, err });
   }
 };
 
@@ -14,9 +16,9 @@ export const signOut = () => async (dispatch, getState, { getFirebase }) => {
 
   try {
     await firebase.auth().signOut();
-    dispatch({ type: 'SIGNOUT_SUCCESS' });
+    dispatch({ type: types.SIGNOUT_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SIGNOUT_ERROR', err });
+    dispatch({ type: types.SIGNOUT_ERROR, err });
   }
 };
 
@@ -36,14 +38,14 @@ export const signUp = (newUser) => async (dispatch, getState, { getFirebase, get
       firstName: newUser.firstName,
       lastName: newUser.lastName,
     });
-    dispatch({ type: 'SIGNUP_SUCCESS' });
+    dispatch({ type: types.SIGNUP_SUCCESS });
   } catch (err) {
-    dispatch({ type: 'SIGNUP_ERROR', err });
+    dispatch({ type: types.SIGNUP_ERROR, err });
   }
 };
 
 export const clearAuthError = () => {
   return {
-    type: 'CLEAR_AUTH_ERROR',
+    type: types.CLEAR_AUTH_ERROR,
   };
 };
