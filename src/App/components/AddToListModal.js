@@ -63,5 +63,11 @@ const mapDispatchToProps = {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: 'mediaLists' }])
+  firestoreConnect((props) => [
+    {
+      collection: 'mediaLists',
+      where: ['userId', '==', props.auth.uid],
+      orderBy: ['createdAt'],
+    },
+  ])
 )(AddToListModal);
