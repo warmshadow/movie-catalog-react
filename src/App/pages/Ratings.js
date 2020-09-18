@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { firestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux';
 import Spinner from 'react-bootstrap/Spinner';
+import Heading from '../components/Heading';
 import MovieList from '../components/MovieList';
 import { removeRating as removeRatingAction } from '../actions';
 import { useConfirmationModal } from '../context/ConfirmationModalContext';
@@ -65,7 +66,7 @@ function Ratings({
 
     return (
       <div>
-        <h2 className="mt-3 mb-5">My ratings</h2>
+        <Heading content="My ratings" />
         <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
       </div>
     );

@@ -26,7 +26,7 @@ function Search({ movies, setMoviesSearch, clearMovies, baseUrl }) {
   return (
     <>
       <h2 className="mt-3">{title}</h2>
-      <h3 className="mb-5">results</h3>
+      <h6 className="mb-5">results</h6>
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );

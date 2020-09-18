@@ -7,6 +7,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 import moment from 'moment';
+import Heading from '../components/Heading';
 import {
   createMediaList as createMediaListAction,
   deleteMediaList as deleteMediaListAction,
@@ -51,7 +52,7 @@ function Lists({ auth, mediaLists, createMediaList, deleteMediaList }) {
 
   return (
     <>
-      <h2 className="font-italic mb-4">My lists:</h2>
+      <Heading content="My lists:" italic />
       {!isEmpty(mediaLists) ? (
         <ListGroup className="mb-4">
           {mediaLists.map((list) => {

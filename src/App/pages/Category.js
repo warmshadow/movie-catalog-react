@@ -6,6 +6,7 @@ import {
   setMoviesCategory as setMoviesCategoryAction,
   clearMovies as clearMoviesAction,
 } from '../actions';
+import Heading from '../components/Heading';
 import MovieList from '../components/MovieList';
 import pageIsInt from '../helpers';
 
@@ -31,7 +32,7 @@ function Category({ categories, movies, baseUrl, setMoviesCategory, clearMovies 
 
   return (
     <>
-      <h2 className="font-italic mt-3 mb-5">{`${category.name} MOVIES`}</h2>
+      <Heading content={`${category.name} movies`} italic />
       <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
     </>
   );
