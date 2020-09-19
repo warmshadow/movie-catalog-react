@@ -12,6 +12,18 @@ import MovieDetails from '../components/MovieDetails';
 import MovieList from '../components/MovieList';
 import pageIsInt from '../helpers';
 
+const renderSimilarList = (movies, baseUrl, basePath) => {
+  if (movies.isPending) {
+    return <Spinner animation="border" />;
+  }
+  return (
+    <>
+      <h3 className="mt-5 mb-5">Similar movies:</h3>
+      <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
+    </>
+  );
+};
+
 function Movie({
   movie,
   setMovie,
@@ -52,12 +64,7 @@ function Movie({
         baseUrl={baseUrl}
         imdbBaseUrl={imdbBaseUrl}
       />
-      <h3 className="mt-5 mb-5">Similar movies:</h3>
-      {movies.isPending ? (
-        <Spinner animation="border" />
-      ) : (
-        <MovieList movies={movies} baseUrl={baseUrl} basePath={basePath} />
-      )}
+      {renderSimilarList(movies, baseUrl, basePath)}
     </>
   );
 }
