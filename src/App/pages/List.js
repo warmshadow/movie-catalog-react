@@ -58,19 +58,17 @@ function List({
   // when switching to this route pause until request is finished to load all new data from db at once
   if (!requested && page === 1) return <Spinner animation="border" />;
 
-  if (!isEmpty(mediaList)) {
-    fetchOnListChange(mediaList);
+  // fetch movies from api
+  fetchOnListChange(mediaList);
 
-    if (movies.isPending) return <Spinner animation="border" />;
+  if (movies.isPending) return <Spinner animation="border" />;
 
-    return (
-      <div>
-        <Heading content={mediaListInfo.name} />
-        <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
-      </div>
-    );
-  }
-  return <div>No items found</div>;
+  return (
+    <div>
+      <Heading content={mediaListInfo.name} />
+      <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+    </div>
+  );
 }
 
 const mapStateToProps = (state, ownProps) => {

@@ -59,24 +59,17 @@ function Watchlist({
   // when switching to this route pause until request is finished to load all new data from db at once
   if (!requested && page === 1) return <Spinner animation="border" />;
 
-  if (!isEmpty(watchlist)) {
-    fetchOnListChange(watchlist);
+  // fetch movies from api
+  fetchOnListChange(watchlist);
 
-    // if (movies.isPending) return <Spinner animation="border" />;
+  if (movies.isPending) return <Spinner animation="border" />;
 
-    return (
-      <div>
-        <Heading content="My watchlist" />
-        {movies.isPending ? (
-          <Spinner animation="border" />
-        ) : (
-          <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
-        )}
-        {/* <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} /> */}
-      </div>
-    );
-  }
-  return <div>No items found</div>;
+  return (
+    <div>
+      <Heading content="My watchlist" />
+      <MovieList movies={movies} baseUrl={baseUrl} removeFromList={removeFromList} />
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
