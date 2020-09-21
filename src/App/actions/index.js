@@ -1,5 +1,13 @@
+import { toastr } from 'react-redux-toastr';
 import * as types from './types';
 import tmdb from '../api/tmdb';
+
+const toastrAdd = {
+  icon: 'success',
+};
+const toastrRemove = {
+  icon: 'error',
+};
 
 const setConfig = () => async (dispatch) => {
   try {
@@ -101,6 +109,7 @@ const createMediaList = (list) => async (dispatch, getState, { getFirestore }) =
       createdAt: firestore.FieldValue.serverTimestamp(),
     });
     dispatch({ type: types.CREATE_MEDIA_LIST_SUCCESS });
+    toastr.light('List created', `Created list "${list.name}"`, toastrAdd);
   } catch (err) {
     dispatch({ type: types.SET_ERROR, payload: err });
   }
@@ -112,33 +121,41 @@ const deleteMediaList = (list) => async (dispatch, getState, { getFirestore }) =
     await firestore.collection('mediaLists').doc(list.id).delete();
 
     dispatch({ type: types.DELETE_MEDIA_LIST_SUCCESS });
+    toastr.light('List deleted', `Deleted list "${list.name}"`, toastrRemove);
   } catch (err) {
     dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
-const addMovieToList = (listId, movie) => async (dispatch, getState, { getFirestore }) => {
+const addMovieToList = (list, movie) => async (dispatch, getState, { getFirestore }) => {
   const { id } = movie;
   try {
     const firestore = getFirestore();
     await firestore
       .collection('mediaLists')
-      .doc(listId)
+      .doc(list.id)
       .collection('movies')
       .doc(`${id}`)
       .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
     dispatch({ type: types.ADD_MOVIE_SUCCESS });
+    toastr.light('Movie added', `Added movie to list "${list.name}"`, toastrAdd);
   } catch (err) {
     dispatch({ type: types.SET_ERROR, payload: err });
   }
 };
 
-const removeMovieFromList = (listId, movie) => async (dispatch, getState, { getFirestore }) => {
+const removeMovieFromList = (list, movie) => async (dispatch, getState, { getFirestore }) => {
   const { id } = movie;
   try {
     const firestore = getFirestore();
-    await firestore.collection('mediaLists').doc(listId).collection('movies').doc(`${id}`).delete();
+    await firestore
+      .collection('mediaLists')
+      .doc(list.id)
+      .collection('movies')
+      .doc(`${id}`)
+      .delete();
     dispatch({ type: types.REMOVE_MOVIE_SUCCESS });
+    toastr.light('Removed movie', `Removed movie from list "${list.name}"`, toastrRemove);
   } catch (err) {
     dispatch({ type: types.SET_ERROR, payload: err });
   }
@@ -156,6 +173,7 @@ const addMovieToWatchlist = (movie) => async (dispatch, getState, { getFirestore
       .doc(`${id}`)
       .set({ id: `${id}`, createdAt: firestore.FieldValue.serverTimestamp() });
     dispatch({ type: types.ADD_MOVIE_WATCHLIST_SUCCESS });
+    toastr.light('Movie added', `Added movie to watchlist`, toastrAdd);
   } catch (err) {
     dispatch({ type: types.SET_ERROR, payload: err });
   }
@@ -168,6 +186,7 @@ const removeMovieFromWatchlist = (movie) => async (dispatch, getState, { getFire
     const { uid } = getState().firebase.auth;
     await firestore.collection('watchlists').doc(uid).collection('movies').doc(`${id}`).delete();
     dispatch({ type: types.REMOVE_MOVIE_WATCHLIST_SUCCESS });
+    toastr.light('Movie removed', 'Removed movie from watchlist', toastrRemove);
   } catch (err) {
     dispatch({ type: types.SET_ERROR, payload: err });
   }

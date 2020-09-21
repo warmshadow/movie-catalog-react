@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootswatch/dist/lux/bootstrap.min.css';
 // import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 import './index.css';
 import Spinner from 'react-bootstrap/Spinner';
 import { Provider, useSelector } from 'react-redux';

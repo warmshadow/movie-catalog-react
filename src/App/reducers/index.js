@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { firestoreReducer } from 'redux-firestore';
 import { firebaseReducer } from 'react-redux-firebase';
+import { reducer as toastrReducer } from 'react-redux-toastr';
 import authReducer from './authReducer';
 import configReducer from './configReducer';
 import moviesReducer from './moviesReducer';
@@ -21,4 +22,5 @@ export default combineReducers({
   watchlist: watchlistReducer,
   firestore: firestoreReducer,
   firebase: firebaseReducer,
+  toastr: toastrReducer,
 });

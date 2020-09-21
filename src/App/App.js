@@ -3,6 +3,7 @@ import { useHistory, Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Container from 'react-bootstrap/Container';
 import Spinner from 'react-bootstrap/Spinner';
+import ReduxToastr from 'react-redux-toastr';
 import { setConfig as setConfigAction } from './actions';
 import NavigationBar from './nav/NavigationBar';
 import Home from './pages/Home';
@@ -48,6 +49,7 @@ function App({ config, setConfig, error }) {
   return (
     <Container align="center">
       <NavigationBar />
+      <ReduxToastr timeOut={2000} transitionIn="fadeIn" transitionOut="fadeOut" />
       <Switch>
         <Route exact path="/">
           <Redirect to="/home" />

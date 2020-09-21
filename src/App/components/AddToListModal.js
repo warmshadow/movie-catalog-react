@@ -11,7 +11,7 @@ const ListsToSelect = ({ lists, item, handleSelectList }) => (
   <ListGroup>
     {lists.length !== 0 ? (
       lists.map((list) => (
-        <ListGroup.Item action onClick={() => handleSelectList(list.id, item)} key={list.id}>
+        <ListGroup.Item action onClick={() => handleSelectList(list, item)} key={list.id}>
           {list.name}
         </ListGroup.Item>
       ))

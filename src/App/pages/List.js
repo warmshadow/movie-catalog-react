@@ -31,7 +31,7 @@ function List({
       content: 'Are you sure?',
       variant: 'danger',
     });
-    if (result) removeMovieFromList(listId, item);
+    if (result) removeMovieFromList({ ...mediaListInfo, id: listId }, item);
   };
 
   const { hideLoadButton, showLoadButton, page } = paginationContext;
