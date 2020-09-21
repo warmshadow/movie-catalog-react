@@ -44,8 +44,7 @@ function Watchlist({
     } else if (movies.results) {
       showLoadButton();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [movies, page]);
+  }, [movies, page, hideLoadButton, showLoadButton]);
 
   if (!auth.uid) return <Redirect to="/signin" />;
 
