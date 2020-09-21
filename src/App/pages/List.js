@@ -44,7 +44,7 @@ function List({
       showLoadButton();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [movies]);
+  }, [movies, page]);
 
   if (!auth.uid) return <Redirect to="/signin" />;
 
